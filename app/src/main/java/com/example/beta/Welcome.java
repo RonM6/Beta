@@ -41,10 +41,12 @@ public class Welcome extends AppCompatActivity {
     public void createFamily(View view) {
 
         startActivity(new Intent(Welcome.this, SignUp.class));
+        finish();
     }
 
     public void joinFamily(View view) {
 
         startActivity(new Intent(Welcome.this, SignUp.class));
+        finish();
     }
 }

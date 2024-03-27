@@ -7,75 +7,52 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
-public class SignUp extends AppCompatActivity {
+public class LogIn extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up);
+        setContentView(R.layout.activity_log_in);
         mAuth = FirebaseAuth.getInstance();
-
-    }
-    @Override
-    public void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null){
-            startActivity(new Intent(SignUp.this, Dashboard.class));
-
-        }
     }
 
-    public void register(View view){
+    public void login(View view) {
         EditText emailEditText = findViewById(R.id.edittext_email);
         EditText passwordEditText = findViewById(R.id.edittext_password);
-        EditText nameEditText = findViewById(R.id.edittext_name);
         String email = String.valueOf(emailEditText.getText());
         String password = String.valueOf(passwordEditText.getText());
-        String name = String.valueOf(nameEditText.getText());
-        String uid;
         if(TextUtils.isEmpty(email)){
-            Toast.makeText(SignUp.this, "Email is empty",Toast.LENGTH_SHORT).show();
+            Toast.makeText(LogIn.this, "Email is empty",Toast.LENGTH_SHORT).show();
             return;
         }
         if(TextUtils.isEmpty(password)){
-            Toast.makeText(SignUp.this, "Password is empty",Toast.LENGTH_SHORT).show();
+            Toast.makeText(LogIn.this, "Password is empty",Toast.LENGTH_SHORT).show();
             return;
         }
-        if(TextUtils.isEmpty(name)){
-            Toast.makeText(SignUp.this, "Name is empty",Toast.LENGTH_SHORT).show();
-            return;
-        }
-        mAuth.createUserWithEmailAndPassword(
-                        emailEditText.getText().toString(), passwordEditText.getText().toString())
+        mAuth.signInWithEmailAndPassword(emailEditText.getText().toString(), passwordEditText.getText().toString())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            startActivity(new Intent(SignUp.this, Dashboard.class));
+                            startActivity(new Intent(LogIn.this, Dashboard.class));
                             finish();
-
                         } else {
-                            Toast.makeText(SignUp.this, "register failed", Toast.LENGTH_LONG).show();
-
+                            Toast.makeText(LogIn.this, "login failed", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
     }
-    public void ahu(View view) {
-        startActivity(new Intent(SignUp.this, LogIn.class));
-
-    }
-
-
 }

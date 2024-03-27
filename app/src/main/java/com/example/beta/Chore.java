@@ -5,6 +5,10 @@ public class Chore {
     private String title;
     private String description;
     private User [] users;
+    private User creator;
+    private User whoEnded;
+
+
 
 
 }
