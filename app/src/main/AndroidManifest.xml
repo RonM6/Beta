@@ -13,6 +13,9 @@
         android:theme="@style/Theme.Beta"
         tools:targetApi="31">
         <activity
+            android:name=".Waiting"
+            android:exported="false" />
+        <activity
             android:name=".Dashboard"
             android:exported="true" />
         <activity
