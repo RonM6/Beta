@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SignUp">
+    tools:context=".LogIn">
 
     <TextView
         android:id="@+id/textView"
@@ -16,15 +16,6 @@
         android:gravity="center"
         android:text="ChoreBuddy"
         android:textSize="34sp" />
-
-    <EditText
-        android:id="@+id/edittext_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:ems="10"
-        android:gravity="center"
-        android:hint="Name" />
 
     <EditText
         android:id="@+id/edittext_email"
@@ -52,26 +43,18 @@
         android:layout_weight="4" />
 
     <Button
-        android:id="@+id/button_register"
+        android:id="@+id/button_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="1"
-        android:onClick="register"
-        android:text="Register" />
+        android:onClick="login"
+        android:text="Log In" />
 
     <Space
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight=".5" />
-
-    <Button
-        android:id="@+id/button_ahu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight=".1"
-        android:onClick="ahu"
-        android:text="Already have a user?" />
 
     <Space
         android:layout_width="match_parent"

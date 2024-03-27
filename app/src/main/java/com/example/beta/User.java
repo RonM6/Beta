@@ -18,7 +18,8 @@ public class User {
     public void setUName(String name) {
         this.name=name;
     }
-    public String getUid() { return uid; }
+    public String getUid() {
+        return uid; }
     public void setUid(String uid) {
         this.uid=uid;
     }
