@@ -1,33 +1,123 @@
 package com.example.beta;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Dashboard extends AppCompatActivity {
+    FloatingActionButton fab;
+    DatabaseReference databaseReference;
+    ValueEventListener eventListener;
+    RecyclerView recyclerView;
+    List<Chore> dataList;
+    MyAdapter adapter;
+    SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_dashboard);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+
+        recyclerView = findViewById(R.id.recyclerView);
+        fab = findViewById(R.id.fab);
+        searchView = findViewById(R.id.search);
+        searchView.clearFocus();
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(Dashboard.this, 1);
+        recyclerView.setLayoutManager(gridLayoutManager);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(Dashboard.this);
+        builder.setCancelable(false);
+        builder.setView(R.layout.progress_layout);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        dataList = new ArrayList<>();
+
+        adapter = new MyAdapter(Dashboard.this, dataList);
+        recyclerView.setAdapter(adapter);
+
+        databaseReference = FirebaseDatabase.getInstance("https://beta-52e80-default-rtdb.europe-west1.firebasedatabase.app").getReference("Chores");
+        dialog.show();
+        eventListener = databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                dataList.clear();
+                for (DataSnapshot itemSnapshot: snapshot.getChildren()){
+                    Chore dataClass = itemSnapshot.getValue(Chore.class);
+
+                    dataClass.setKey(itemSnapshot.getKey());
+
+                    dataList.add(dataClass);
+                }
+                adapter.notifyDataSetChanged();
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                dialog.dismiss();
+            }
         });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchList(newText);
+                return true;
+            }
+        });
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Dashboard.this, UploadActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
-    public void logout(View view) {
+
+    public void searchList(String text){
+        ArrayList<Chore> searchList = new ArrayList<>();
+        for (Chore dataClass: dataList){
+            if (dataClass.getTitle().toLowerCase().contains(text.toLowerCase())){
+                searchList.add(dataClass);
+            }
+        }
+        adapter.searchDataList(searchList);
+    }
+
+    public void logOut(View view) {
         FirebaseAuth.getInstance().signOut();
-        startActivity(new Intent(this, Welcome.class));
+        Intent intent = new Intent(Dashboard.this, Welcome.class);
+        startActivity(intent);
         finish();
     }
 }

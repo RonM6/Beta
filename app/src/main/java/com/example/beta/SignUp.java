@@ -1,5 +1,7 @@
 package com.example.beta;
 
+import static com.example.beta.DBref.refUsers;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -43,7 +45,7 @@ public class SignUp extends AppCompatActivity {
         String email = String.valueOf(emailEditText.getText());
         String password = String.valueOf(passwordEditText.getText());
         String name = String.valueOf(nameEditText.getText());
-        String uid;
+
         if(TextUtils.isEmpty(email)){
             Toast.makeText(SignUp.this, "Email is empty",Toast.LENGTH_SHORT).show();
             return;
@@ -62,6 +64,10 @@ public class SignUp extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            String uid = user.getUid();
+                            User user1 = new User(uid,name);
+                            refUsers.child(uid).setValue(user1);
                             startActivity(new Intent(SignUp.this, Dashboard.class));
                             finish();
 

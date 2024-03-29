@@ -1,30 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".Dashboard">
 
-    <Space
+    <!-- app:closeIcon="@drawable/ic_baseline_clear_24"
+        app:searchIcon="@drawable/ic_baseline_search_24"
+        android:background="@drawable/lavender_border" -->
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="12" />
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="12dp"
+        android:focusable="false"
+        app:iconifiedByDefault="false"
+        app:queryHint="Search..."
+        app:searchHintIcon="@null" />
 
-    <Button
-        android:id="@+id/button_logout"
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/search"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recyclerView"
+        android:scrollbars="vertical"/>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:onClick="logout"
-        android:text="Logout" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="40dp"
+        android:backgroundTint="@color/lavender"
+        app:tint = "@color/white"
+        android:src="@drawable/ic_baseline_add_24" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" />
+    <com.github.clans.fab.FloatingActionMenu
+        android:layout_width="110dp"
+        android:layout_height="142dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="683dp"
+        app:menu_colorNormal="@color/lavender"
+        app:menu_colorPressed="@color/lavender"
+        app:menu_fab_size="normal"
+        app:menu_icon="@drawable/ic_baseline_format_list_bulleted_24"
+        app:menu_openDirection="down"
+        app:menu_showShadow="true">
 
-</LinearLayout>
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/logOutButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="logOut"
+            android:src="@drawable/baseline_exit_to_app_24"
+            app:fab_colorNormal="@color/red"
+            app:fab_showShadow="true"
+            app:fab_size="mini" />
+
+
+    </com.github.clans.fab.FloatingActionMenu>
+</RelativeLayout>

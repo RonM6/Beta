@@ -32,6 +32,7 @@ android {
     }
 }
 
+
 dependencies {
 
     implementation(libs.appcompat)
@@ -40,6 +41,13 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
+
+    implementation ("com.github.bumptech.glide:glide:4.14.2")
+    implementation(libs.firebase.storage)
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.14.2")
+    implementation ("com.github.clans:fab:1.6.4")
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

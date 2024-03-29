@@ -4,13 +4,12 @@ public class User {
     private String uid;
     private String name;
     private Family family;
-    private Chore [] activeChores;
 
-    public User(String uid, String name, Family family){
+    public User(String uid, String name){
         this.uid = uid;
         this.name = name;
-        this.family = family;
     }
+
 
     public String getUName() {
         return this.name;
