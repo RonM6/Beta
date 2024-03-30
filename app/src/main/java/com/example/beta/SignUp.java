@@ -1,5 +1,6 @@
 package com.example.beta;
 
+import static com.example.beta.DBref.refFamilies;
 import static com.example.beta.DBref.refUsers;
 
 import android.content.Intent;
@@ -20,12 +21,17 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class SignUp extends AppCompatActivity {
     private FirebaseAuth mAuth;
+    String fName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         mAuth = FirebaseAuth.getInstance();
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+            fName = bundle.getString("fName");
+        }
 
     }
     @Override
@@ -39,7 +45,7 @@ public class SignUp extends AppCompatActivity {
     }
 
     public void register(View view){
-        EditText emailEditText = findViewById(R.id.edittext_email);
+        EditText emailEditText = findViewById(R.id.edittext_fid);
         EditText passwordEditText = findViewById(R.id.edittext_password);
         EditText nameEditText = findViewById(R.id.edittext_name);
         String email = String.valueOf(emailEditText.getText());
@@ -66,10 +72,22 @@ public class SignUp extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
                             String uid = user.getUid();
-                            User user1 = new User(uid,name);
+                            User user1 = new User(uid, name, fName);
                             refUsers.child(uid).setValue(user1);
-                            startActivity(new Intent(SignUp.this, Dashboard.class));
-                            finish();
+                            Family family = new Family(fName);
+                            family.addUser(uid);
+                            refFamilies.child(fName).setValue(family).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        // Family node updated successfully
+                                        startActivity(new Intent(SignUp.this, Dashboard.class));
+                                        finish();
+                                    } else {
+                                        Toast.makeText(SignUp.this, "Failed to create family", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
 
                         } else {
                             Toast.makeText(SignUp.this, "register failed", Toast.LENGTH_LONG).show();

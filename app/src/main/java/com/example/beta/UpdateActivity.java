@@ -123,9 +123,9 @@ public class UpdateActivity extends AppCompatActivity {
         title = updateTitle.getText().toString().trim();
         desc = updateDesc.getText().toString().trim();
 
-        Chore dataClass = new Chore(title, desc, imageUrl);
+        Chore chore = new Chore(title, desc, imageUrl);
 
-        databaseReference.setValue(dataClass).addOnCompleteListener(new OnCompleteListener<Void>() {
+        databaseReference.setValue(chore).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()){

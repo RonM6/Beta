@@ -1,5 +1,7 @@
 package com.example.beta;
 
+import static com.example.beta.DBref.refChores;
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -116,15 +118,15 @@ public class UploadActivity extends AppCompatActivity {
         String title = uploadTopic.getText().toString();
         String desc = uploadDesc.getText().toString();
 
-        Chore dataClass = new Chore(title, desc, imageURL);
+        Chore chore = new Chore(title, desc, imageURL);
 
         //We are changing the child from title to currentDate,
         // because we will be updating title as well and it may affect child value.
 
         String currentDate = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
 
-        FirebaseDatabase.getInstance("https://beta-52e80-default-rtdb.europe-west1.firebasedatabase.app").getReference("Chores").child(currentDate)
-                .setValue(dataClass).addOnCompleteListener(new OnCompleteListener<Void>() {
+        refChores.child(currentDate)
+                .setValue(chore).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()){

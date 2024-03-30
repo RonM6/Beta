@@ -7,12 +7,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -30,7 +26,7 @@ public class LogIn extends AppCompatActivity {
     }
 
     public void login(View view) {
-        EditText emailEditText = findViewById(R.id.edittext_email);
+        EditText emailEditText = findViewById(R.id.edittext_fid);
         EditText passwordEditText = findViewById(R.id.edittext_password);
         String email = String.valueOf(emailEditText.getText());
         String password = String.valueOf(passwordEditText.getText());

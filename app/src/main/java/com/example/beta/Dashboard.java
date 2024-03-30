@@ -65,11 +65,11 @@ public class Dashboard extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 dataList.clear();
                 for (DataSnapshot itemSnapshot: snapshot.getChildren()){
-                    Chore dataClass = itemSnapshot.getValue(Chore.class);
+                    Chore chore = itemSnapshot.getValue(Chore.class);
 
-                    dataClass.setKey(itemSnapshot.getKey());
+                    chore.setKey(itemSnapshot.getKey());
 
-                    dataList.add(dataClass);
+                    dataList.add(chore);
                 }
                 adapter.notifyDataSetChanged();
                 dialog.dismiss();

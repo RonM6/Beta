@@ -1,13 +1,14 @@
 package com.example.beta;
 
+import java.util.ArrayList;
+
 public class Family {
     private String fid;
     private String name;
-    private User [] users;
+    private ArrayList<String> users = new ArrayList<>();
 
-    public Family(String name, String fid){
+    public Family(String name){
         this.name = name;
-        this.fid = fid;
     }
     public String getFName() {
         return this.name;
@@ -18,6 +19,9 @@ public class Family {
     public String getFid() { return fid; }
     public void setFid(String fid) {
         this.fid=fid;
+    }
+    public void addUser(String uid){
+        this.users.add(uid);
     }
 
 }

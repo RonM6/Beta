@@ -18,7 +18,7 @@
         android:textSize="34sp" />
 
     <EditText
-        android:id="@+id/edittext_email"
+        android:id="@+id/edittext_fid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"

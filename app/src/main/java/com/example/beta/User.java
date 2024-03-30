@@ -1,13 +1,17 @@
 package com.example.beta;
 
+import java.util.ArrayList;
+
 public class User {
     private String uid;
     private String name;
-    private Family family;
+    private String family;
+    ArrayList<String> chores = new ArrayList<String>();
 
-    public User(String uid, String name){
+    public User(String uid, String name, String family){
         this.uid = uid;
         this.name = name;
+        this.family = family;
     }
 
 
@@ -21,5 +25,10 @@ public class User {
         return uid; }
     public void setUid(String uid) {
         this.uid=uid;
+    }
+    public void setFamily(String family){ this.family = family; }
+    public String getFamily(String family){ return this.family; }
+    public void addChore (String kid){
+        this.chores.add(kid);
     }
 }
