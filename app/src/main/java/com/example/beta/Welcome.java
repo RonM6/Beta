@@ -1,5 +1,8 @@
 package com.example.beta;
 
+import static com.example.beta.DBref.refFamilies;
+import static com.example.beta.DBref.refUsers;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -36,28 +39,37 @@ public class Welcome extends AppCompatActivity {
             return insets;
         });
     }
-    @Override
-    public void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null){
-            startActivity(new Intent(Welcome.this, Dashboard.class));
-
-        }
-    }
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
+//        if (currentUser != null){
+//            startActivity(new Intent(Welcome.this, Dashboard.class));
+//
+//        }
+//    }
 
     public void createFamily(View view) {
-        EditText name = findViewById(R.id.edittext_fid);
-        String fName = name.getText().toString();
+        EditText editText = findViewById(R.id.edittext_fid);
+        String fName = editText.getText().toString();
 
         if(TextUtils.isEmpty(fName)){
             Toast.makeText(Welcome.this, "Name is empty",Toast.LENGTH_SHORT).show();
             return;
         }
-
         Family family = new Family(fName);
-        FirebaseDatabase.getInstance("https://beta-52e80-default-rtdb.europe-west1.firebasedatabase.app").getReference("Families").child(fName)
-                .setValue(family).addOnCompleteListener(new OnCompleteListener<Void>() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        String uid = user.getUid();
+        family.addUser(uid);
+        String name = null;
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+            name = bundle.getString("name");
+        }
+        User user1 = new User(uid, name, fName);
+        refUsers.child(uid).setValue(user1);
+
+        refFamilies.child(fName).setValue(family).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()){
@@ -69,17 +81,27 @@ public class Welcome extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(Welcome.this, e.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                        return;
                     }
                 });
-        Intent intent = new Intent(Welcome.this, SignUp.class)
-                .putExtra("fName", fName);
+        Intent intent = new Intent(Welcome.this, Dashboard.class);
         startActivity(intent);
         finish();
     }
 
     public void joinFamily(View view) {
+        EditText name = findViewById(R.id.edittext_fid);
+        String fName = name.getText().toString();
+        if(TextUtils.isEmpty(fName)){
+            Toast.makeText(Welcome.this, "Family ID is empty",Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        startActivity(new Intent(Welcome.this, SignUp.class));
+
+
+        Intent intent = new Intent(Welcome.this, Waiting.class)
+                .putExtra("fName", fName);
+        startActivity(intent);
         finish();
     }
 }

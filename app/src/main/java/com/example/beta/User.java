@@ -13,6 +13,7 @@ public class User {
         this.name = name;
         this.family = family;
     }
+
     public User(){
 
     }

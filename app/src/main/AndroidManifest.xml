@@ -35,10 +35,10 @@
             android:name=".Dashboard"
             android:exported="true" />
         <activity
-            android:name=".SignUp"
+            android:name=".Welcome"
             android:exported="true" />
         <activity
-            android:name=".Welcome"
+            android:name=".SignUp"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

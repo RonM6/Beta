@@ -38,7 +38,7 @@ public class SignUp extends AppCompatActivity {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null){
-            startActivity(new Intent(SignUp.this, Dashboard.class));
+            startActivity(new Intent(SignUp.this, Welcome.class));
 
         }
     }
@@ -70,30 +70,27 @@ public class SignUp extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Bundle bundle = getIntent().getExtras();
                             String fName = null;
-                            if (bundle != null){
-                                fName = bundle.getString("fName");
-                            }
                             String uid = user.getUid();
                             User user1 = new User(uid, name, fName);
-                            FirebaseDatabase.getInstance("https://beta-52e80-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
-                                    .child(uid).setValue(user1);
-                            Family family = new Family(fName);
-                            family.addUser(uid);
-                            FirebaseDatabase.getInstance("https://beta-52e80-default-rtdb.europe-west1.firebasedatabase.app").getReference("Families")
-                                    .child(fName).setValue(family).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        // Family node updated successfully
-                                        startActivity(new Intent(SignUp.this, Dashboard.class));
-                                        finish();
-                                    } else {
-                                        Toast.makeText(SignUp.this, "Failed to create family", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
+                            refUsers.child(uid).setValue(user1).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                // Family node updated successfully
+                                                Intent intent = new Intent(SignUp.this, Welcome.class)
+                                                        .putExtra("name", name);
+                                                startActivity(intent);
+                                                finish();
+                                            } else {
+                                                Toast.makeText(SignUp.this, "Failed to create family", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+//                            Family family = new Family(fName);
+//                            family.addUser(uid);
+//                            FirebaseDatabase.getInstance("https://beta-52e80-default-rtdb.europe-west1.firebasedatabase.app").getReference("Families")
+//                                    .child(fName).setValue(family);
 
                         } else {
                             Toast.makeText(SignUp.this, "register failed", Toast.LENGTH_LONG).show();

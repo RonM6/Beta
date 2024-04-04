@@ -9,10 +9,17 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class Waiting extends AppCompatActivity {
+    String fName;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+            fName = bundle.getString("fName");
+        }
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_waiting);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
