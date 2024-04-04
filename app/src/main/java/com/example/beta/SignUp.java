@@ -77,7 +77,6 @@ public class SignUp extends AppCompatActivity {
                             }
                             String uid = user.getUid();
                             User user1 = new User(uid, name, fName);
-//                            Log.d("TAG", "onComplete: " + user1.getFamily());
                             FirebaseDatabase.getInstance("https://beta-52e80-default-rtdb.europe-west1.firebasedatabase.app").getReference("Users")
                                     .child(uid).setValue(user1);
                             Family family = new Family(fName);
