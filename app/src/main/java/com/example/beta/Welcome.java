@@ -57,10 +57,9 @@ public class Welcome extends AppCompatActivity {
             Toast.makeText(Welcome.this, "Name is empty",Toast.LENGTH_SHORT).show();
             return;
         }
-        Family family = new Family(fName);
+
         FirebaseUser user = mAuth.getCurrentUser();
         String uid = user.getUid();
-        family.addUser(uid);
         String name = null;
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
@@ -69,6 +68,8 @@ public class Welcome extends AppCompatActivity {
         User user1 = new User(uid, name, fName);
         refUsers.child(uid).setValue(user1);
 
+        Family family = new Family(fName, uid.substring(0, 5));
+        family.addUser(uid);
         refFamilies.child(fName).setValue(family).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -96,7 +97,6 @@ public class Welcome extends AppCompatActivity {
             Toast.makeText(Welcome.this, "Family ID is empty",Toast.LENGTH_SHORT).show();
             return;
         }
-
 
 
         Intent intent = new Intent(Welcome.this, Waiting.class)
