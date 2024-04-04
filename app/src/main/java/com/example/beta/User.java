@@ -13,8 +13,9 @@ public class User {
         this.name = name;
         this.family = family;
     }
+    public User(){
 
-
+    }
     public String getUName() {
         return this.name;
     }
@@ -27,8 +28,11 @@ public class User {
         this.uid=uid;
     }
     public void setFamily(String family){ this.family = family; }
-    public String getFamily(String family){ return this.family; }
+    public String getFamily(){ return this.family; }
     public void addChore (String kid){
         this.chores.add(kid);
+    }
+    public ArrayList<String> getChores(){
+        return this.chores;
     }
 }

@@ -5,10 +5,13 @@ import java.util.ArrayList;
 public class Family {
     private String fid;
     private String name;
-    private ArrayList<String> users = new ArrayList<>();
+    private ArrayList<String> users = new ArrayList<String>();
 
     public Family(String name){
         this.name = name;
+    }
+    public Family(){
+
     }
     public String getFName() {
         return this.name;
@@ -22,6 +25,9 @@ public class Family {
     }
     public void addUser(String uid){
         this.users.add(uid);
+    }
+    public ArrayList<String> getUsers(){
+        return this.users;
     }
 
 }
