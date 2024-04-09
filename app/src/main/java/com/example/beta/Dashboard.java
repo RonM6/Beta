@@ -1,5 +1,7 @@
 package com.example.beta;
 
+import static com.example.beta.DBref.refChores;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,7 +29,6 @@ import java.util.List;
 
 public class Dashboard extends AppCompatActivity {
     FloatingActionButton fab;
-    DatabaseReference databaseReference;
     ValueEventListener eventListener;
     RecyclerView recyclerView;
     List<Chore> dataList;
@@ -58,9 +59,8 @@ public class Dashboard extends AppCompatActivity {
         adapter = new MyAdapter(Dashboard.this, dataList);
         recyclerView.setAdapter(adapter);
 
-        databaseReference = FirebaseDatabase.getInstance("https://beta-52e80-default-rtdb.europe-west1.firebasedatabase.app").getReference("Chores");
         dialog.show();
-        eventListener = databaseReference.addValueEventListener(new ValueEventListener() {
+        eventListener = refChores.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 dataList.clear();

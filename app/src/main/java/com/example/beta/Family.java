@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class Family {
     private String fid;
     private String name;
-
     private ArrayList<String> users = new ArrayList<String>();
 
     public Family(String name, String fid){

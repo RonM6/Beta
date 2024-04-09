@@ -85,7 +85,8 @@ public class Welcome extends AppCompatActivity {
                         return;
                     }
                 });
-        Intent intent = new Intent(Welcome.this, Dashboard.class);
+        Intent intent = new Intent(Welcome.this, Dashboard.class)
+                .putExtra("fid", family.getFid());
         startActivity(intent);
         finish();
     }
@@ -100,7 +101,7 @@ public class Welcome extends AppCompatActivity {
 
 
         Intent intent = new Intent(Welcome.this, Waiting.class)
-                .putExtra("fName", fName);
+                .putExtra("fid", fName);
         startActivity(intent);
         finish();
     }
