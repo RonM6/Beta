@@ -4,6 +4,7 @@ import static com.example.beta.DBref.refFamilies;
 import static com.example.beta.DBref.refUsers;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -22,7 +23,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class Welcome extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -58,19 +63,27 @@ public class Welcome extends AppCompatActivity {
             return;
         }
 
-        FirebaseUser user = mAuth.getCurrentUser();
-        String uid = user.getUid();
+        FirebaseUser fbUser = mAuth.getCurrentUser();
+        String uid = fbUser.getUid();
+        String fid = uid.substring(0, 5);
         String name = null;
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
             name = bundle.getString("name");
         }
-        User user1 = new User(uid, name, fName);
-        refUsers.child(uid).setValue(user1);
+        User user = new User(uid, name, fid);
+        refUsers.child(uid).setValue(user);
 
-        Family family = new Family(fName, uid.substring(0, 5));
+
+        Family family = new Family(fName, fid);
         family.addUser(uid);
-        refFamilies.child(fName).setValue(family).addOnCompleteListener(new OnCompleteListener<Void>() {
+        SharedPreferences temp = getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
+        SharedPreferences.Editor editor=temp.edit();
+        editor.putString("fid", fid);
+        editor.commit();
+
+
+        refFamilies.child(fid).setValue(family).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()){
@@ -92,16 +105,67 @@ public class Welcome extends AppCompatActivity {
     }
 
     public void joinFamily(View view) {
-        EditText name = findViewById(R.id.edittext_fid);
-        String fName = name.getText().toString();
-        if(TextUtils.isEmpty(fName)){
+        EditText editText = findViewById(R.id.edittext_fid);
+        String fid = editText.getText().toString();
+        if(TextUtils.isEmpty(fid)){
             Toast.makeText(Welcome.this, "Family ID is empty",Toast.LENGTH_SHORT).show();
             return;
         }
 
 
-        Intent intent = new Intent(Welcome.this, Waiting.class)
-                .putExtra("fid", fName);
+        FirebaseUser user = mAuth.getCurrentUser();
+        String uid = user.getUid();
+
+        String name = null;
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+            name = bundle.getString("name");
+        }
+        // Assuming you have a DatabaseReference object for the user's data
+        DatabaseReference currentUserRef = refUsers.child(uid);
+
+        currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // Check if the snapshot exists
+                if (dataSnapshot.exists()) {
+                    // Get the user object
+                    User user = dataSnapshot.getValue(User.class);
+                    // Access the User fields
+                    user.setFamily(fid);
+                    refUsers.child(uid).setValue(user);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle potential errors here
+            }
+
+        });
+
+        DatabaseReference currentFamilyRef = refFamilies.child(fid);
+        currentFamilyRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Family family = snapshot.getValue(Family.class);
+                family.addUser(uid);
+                refFamilies.child(fid).setValue(family);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        SharedPreferences temp = getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
+        SharedPreferences.Editor editor=temp.edit();
+        editor.putString("fid", fid);
+        editor.commit();
+
+        Intent intent = new Intent(Welcome.this, Dashboard.class)
+                .putExtra("fName", fid);
         startActivity(intent);
         finish();
     }

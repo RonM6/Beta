@@ -13,11 +13,12 @@
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search"
-        android:layout_width="match_parent"
+        android:layout_width="294dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginEnd="10dp"
+        android:layout_toStartOf="@+id/floatingActionMenu"
         android:focusable="false"
         app:iconifiedByDefault="false"
         app:queryHint="Search..."
@@ -42,12 +43,11 @@
         android:src="@drawable/ic_baseline_add_24" />
 
     <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/floatingActionMenu"
         android:layout_width="110dp"
         android:layout_height="142dp"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="683dp"
+        android:layout_marginEnd="13dp"
         app:menu_colorNormal="@color/lavender"
         app:menu_colorPressed="@color/lavender"
         app:menu_fab_size="normal"
@@ -62,6 +62,16 @@
             android:onClick="logOut"
             android:src="@drawable/baseline_exit_to_app_24"
             app:fab_colorNormal="@color/red"
+            app:fab_showShadow="true"
+            app:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/settingsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="settings"
+            android:src="@drawable/baseline_app_settings_alt_24"
+            app:fab_colorNormal="@color/teal_700"
             app:fab_showShadow="true"
             app:fab_size="mini" />
 

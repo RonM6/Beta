@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -119,5 +120,28 @@ public class Dashboard extends AppCompatActivity {
         Intent intent = new Intent(Dashboard.this, SignUp.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        String st = item.getTitle().toString();
+        if(st.equals("Log Out")){
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(Dashboard.this, SignUp.class);
+            startActivity(intent);
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void settings(View view) {
+        Intent intent = new Intent(Dashboard.this, Stngs.class);
+        startActivity(intent);
     }
 }
