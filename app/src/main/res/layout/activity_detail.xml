@@ -26,7 +26,7 @@
         android:padding="8dp"
         android:layout_gravity="center"
         android:src="@drawable/uploadimg"
-        android:scaleType="fitXY"/>
+        android:scaleType="fitCenter"/>
 
     <TextView
         android:layout_width="match_parent"

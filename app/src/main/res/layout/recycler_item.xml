@@ -35,6 +35,17 @@
             android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"
             android:layout_toEndOf="@id/recImage"/>
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:id="@+id/recStat"
+            android:text="priority"
+            android:layout_toEndOf="@id/recTitle"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="90dp"
+            android:textAlignment="center"
+            android:textColor="@color/lavender"
+            android:textSize="16sp"/>
 
         <TextView
             android:layout_width="140dp"

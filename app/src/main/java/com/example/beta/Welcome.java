@@ -116,11 +116,26 @@ public class Welcome extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         String uid = user.getUid();
 
-        String name = null;
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null){
-            name = bundle.getString("name");
-        }
+        DatabaseReference currentFamilyRef = refFamilies.child(fid);
+        currentFamilyRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(!snapshot.exists()){
+                    Toast.makeText(Welcome.this, "Family ID incorrect",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Family family = snapshot.getValue(Family.class);
+                family.addUser(uid);
+                refFamilies.child(fid).setValue(family);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
         // Assuming you have a DatabaseReference object for the user's data
         DatabaseReference currentUserRef = refUsers.child(uid);
 
@@ -145,20 +160,7 @@ public class Welcome extends AppCompatActivity {
 
         });
 
-        DatabaseReference currentFamilyRef = refFamilies.child(fid);
-        currentFamilyRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Family family = snapshot.getValue(Family.class);
-                family.addUser(uid);
-                refFamilies.child(fid).setValue(family);
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
         SharedPreferences temp = getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
         SharedPreferences.Editor editor=temp.edit();
         editor.putString("fid", fid);

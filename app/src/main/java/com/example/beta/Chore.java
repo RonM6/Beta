@@ -5,8 +5,10 @@ public class Chore {
     private String title;
     private String description;
     private String dataImage;
+    private String due;
     private String creator;
     private String whoEnded = "-1";
+    private String timeEnd;
 
 
     public Chore(String title, String description,  String dataImage){
