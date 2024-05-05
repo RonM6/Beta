@@ -1,120 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".UploadActivity">
-
-    <LinearLayout
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
-        android:background="@drawable/lavender_border"
-        android:orientation="vertical"
-        android:padding="20dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Create Chore"
-            android:textAlignment="center"
-            android:textColor="@color/lavender"
-            android:textSize="30sp" />
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/lavender_border"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Create Chore"
+                android:textAlignment="center"
+                android:textColor="@color/lavender"
+                android:textSize="30sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="@drawable/lavender_border"
+                android:orientation="horizontal">
+
+                <Space
+                    android:layout_width="300dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/uploadImage1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:onClick="dishes"
+                    android:src="@drawable/washing_dishes" />
+
+                <ImageView
+                    android:id="@+id/uploadImage2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:onClick="laundry"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/laundry_machine" />
+
+                <ImageView
+                    android:id="@+id/uploadImage3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:onClick="vacuum"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/vacuum" />
+
+                <ImageView
+                    android:id="@+id/uploadImage4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:onClick="trash"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/trash" />
+
+                <ImageView
+                    android:id="@+id/uploadImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_baseline_add_24" />
+
+                <Space
+                    android:layout_width="300dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/uploadTopic"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/lavender_border"
+                android:gravity="start|center_vertical"
+                android:hint="Chore Title"
+                android:padding="16dp"
+                android:textColor="@color/lavender" />
+
+            <EditText
+                android:id="@+id/uploadDesc"
+                android:layout_width="match_parent"
+                android:layout_height="111dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/lavender_border"
+                android:gravity="start|center_vertical"
+                android:hint="Description"
+                android:padding="16dp"
+                android:textColor="@color/lavender" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="19dp" />
 
             <Button
-                android:id="@+id/button7"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Button" />
+                android:id="@+id/button3"
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:text="Pick Due Time" />
 
-            <Button
-                android:id="@+id/button6"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Button" />
-
-            <Button
-                android:id="@+id/button5"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Button" />
-
-            <Button
-                android:id="@+id/button4"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Button" />
-
-            <ImageView
-                android:id="@+id/uploadImage"
-                android:layout_width="80dp"
-                android:layout_height="match_parent"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView1"
+                android:layout_width="match_parent"
+                android:layout_height="280dp"
                 android:layout_marginTop="10dp"
-                android:layout_weight="1"
-                android:scaleType="fitCenter"
-                android:src="@drawable/uploadimg" />
+                android:background="@drawable/lavender_border"
+                android:scrollbars="vertical" />
+
+            <Button
+                android:id="@+id/saveButton"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/lavender_border"
+                android:text="Save"
+                android:textSize="18sp"
+                app:cornerRadius="20dp" />
+
         </LinearLayout>
-
-        <EditText
-            android:id="@+id/uploadTopic"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/lavender_border"
-            android:gravity="start|center_vertical"
-            android:hint="Chore Title"
-            android:padding="16dp"
-            android:textColor="@color/lavender" />
-
-        <EditText
-            android:id="@+id/uploadDesc"
-            android:layout_width="match_parent"
-            android:layout_height="111dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/lavender_border"
-            android:gravity="start|center_vertical"
-            android:hint="Description"
-            android:padding="16dp"
-            android:textColor="@color/lavender" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="19dp" />
-
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="match_parent"
-            android:layout_height="75dp"
-            android:text="Pick Due Time" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="280dp"
-            android:layout_below="@id/search"
-            android:layout_marginTop="10dp"
-            android:scrollbars="vertical" />
-
-        <Button
-            android:id="@+id/saveButton"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="20dp"
-            android:text="Save"
-            android:textSize="18sp"
-            app:cornerRadius="20dp" />
-
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
+</FrameLayout>

@@ -1,14 +1,29 @@
 package com.example.beta;
 
+import static com.example.beta.DBref.fid;
+import static com.example.beta.DBref.mAuth;
+import static com.example.beta.DBref.refChores;
+import static com.example.beta.DBref.refDChores;
+
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +66,31 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
                 context.startActivity(intent);
             }
         });
+        holder.recCheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                DatabaseReference reference = refChores.child(DBref.fid);
+
+                reference.child(dataList.get(holder.getAdapterPosition()).getKey()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if (task.isSuccessful()){
+                            Chore chore = task.getResult().getValue(Chore.class);
+                            chore.setWhoEnded(mAuth.getUid());
+                            refDChores.child(DBref.fid).child(dataList.get(holder.getAdapterPosition()).getKey()).setValue(chore);
+
+                        }
+                        reference.child(dataList.get(holder.getAdapterPosition()).getKey()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Toast.makeText(context, "Chore completed", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -66,7 +106,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
 class MyViewHolder extends RecyclerView.ViewHolder{
 
-    ImageView recImage;
+    ImageView recImage, recCheck;
     TextView recTitle, recDesc;
     CardView recCard;
 
@@ -74,6 +114,7 @@ class MyViewHolder extends RecyclerView.ViewHolder{
         super(itemView);
 
         recImage = itemView.findViewById(R.id.recImage);
+        recCheck = itemView.findViewById(R.id.recCheck);
         recCard = itemView.findViewById(R.id.recCard);
         recDesc = itemView.findViewById(R.id.recDesc);
         recTitle = itemView.findViewById(R.id.recTitle);

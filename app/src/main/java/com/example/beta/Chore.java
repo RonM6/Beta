@@ -2,6 +2,7 @@ package com.example.beta;
 
 public class Chore {
     private String key;
+    private String cid;
     private String title;
     private String description;
     private String dataImage;
@@ -9,6 +10,7 @@ public class Chore {
     private String creator;
     private String whoEnded = "-1";
     private String timeEnd;
+    private String status;
 
 
     public Chore(String title, String description,  String dataImage){
@@ -16,11 +18,27 @@ public class Chore {
         this.description = description;
         this.dataImage = dataImage;
     }
+    public Chore(String title, String description,  String dataImage, String creator,String status, String cid){
+        this.title = title;
+        this.description = description;
+        this.dataImage = dataImage;
+        this.creator = creator;
+        this.status = status;
+        this.cid = cid;
+    }
     public  Chore(){
 
     }
     public String getDataImage() {
         return dataImage;
+    }
+
+    public void setCid(String cid) {
+        this.cid = cid;
+    }
+
+    public String getCid() {
+        return cid;
     }
 
     public void setKey(String key){
@@ -51,10 +69,5 @@ public class Chore {
     public String  getWhoEnded(){
         return whoEnded;
     }
-
-
-
-
-
 
 }

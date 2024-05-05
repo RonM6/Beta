@@ -4,6 +4,7 @@ import static com.example.beta.DBref.refFamilies;
 import static com.example.beta.DBref.refUsers;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -37,9 +38,12 @@ public class SignUp extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null){
-            startActivity(new Intent(SignUp.this, Dashboard.class));
+        SharedPreferences settings = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
+        String fid = settings.getString("fid", "-1");
 
+        if (currentUser != null & fid != "-1"){
+            DBref.fid = fid;
+            startActivity(new Intent(SignUp.this, MainActivity.class));
         }
     }
 

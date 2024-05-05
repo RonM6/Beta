@@ -7,6 +7,7 @@ public class User {
     private String name;
     private String family;
     ArrayList<String> chores = new ArrayList<String>();
+    ArrayList<String> myChores = new ArrayList<String>();
 
     public User(String uid, String name, String family){
         this.uid = uid;
@@ -30,10 +31,16 @@ public class User {
     }
     public void setFamily(String family){ this.family = family; }
     public String getFamily(){ return this.family; }
-    public void addChore (String kid){
-        this.chores.add(kid);
+    public void addChore (String cid){
+        this.chores.add(cid);
+    }
+    public void addMyChore(String cid){
+        this.myChores.add(cid);
     }
     public ArrayList<String> getChores(){
         return this.chores;
+    }
+    public ArrayList<String> getMyChores(){
+        return this.myChores;
     }
 }

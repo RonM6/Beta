@@ -150,6 +150,12 @@ public class Welcome extends AppCompatActivity {
                     user.setFamily(fid);
                     refUsers.child(uid).setValue(user);
 
+                    SharedPreferences temp = getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
+                    SharedPreferences.Editor editor=temp.edit();
+                    editor.putString("fid", fid);
+                    editor.commit();
+                    DBref.fid = user.getFamily();
+
                 }
             }
 
@@ -161,10 +167,7 @@ public class Welcome extends AppCompatActivity {
         });
 
 
-        SharedPreferences temp = getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
-        SharedPreferences.Editor editor=temp.edit();
-        editor.putString("fid", fid);
-        editor.commit();
+
 
         Intent intent = new Intent(Welcome.this, Dashboard.class)
                 .putExtra("fName", fid);

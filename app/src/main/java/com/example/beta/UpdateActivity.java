@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -40,6 +41,9 @@ public class UpdateActivity extends AppCompatActivity {
     Uri uri;
     DatabaseReference databaseReference;
     StorageReference storageReference;
+
+    SharedPreferences settings = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
+    String fid = settings.getString("fid", "-1");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

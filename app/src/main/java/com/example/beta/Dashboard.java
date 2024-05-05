@@ -1,78 +1,88 @@
 package com.example.beta;
 
+import static com.example.beta.DBref.FBDB;
+import static com.example.beta.DBref.mAuth;
 import static com.example.beta.DBref.refChores;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import static com.example.beta.DBref.refUsers;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Dashboard extends AppCompatActivity {
+public class Dashboard extends Fragment {
     FloatingActionButton fab;
-    ValueEventListener eventListener;
-    RecyclerView recyclerView;
-    List<Chore> dataList;
+    ValueEventListener eventListener, eventListener2;
+    RecyclerView recyclerView, myRecyclerView;
+    List<Chore> chores;
+    List<Chore> myChores;
+    List<String> choreList;
+    List<String> myChoreList;
     MyAdapter adapter;
-    SearchView searchView;
+    MyAdapter myAdapter;
+    String fid;
+    String uid;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_dashboard, container, false);
 
-        recyclerView = findViewById(R.id.recyclerView);
-        fab = findViewById(R.id.fab);
-        searchView = findViewById(R.id.search);
-        searchView.clearFocus();
+        SharedPreferences settings = requireActivity().getSharedPreferences("PREFS_NAME", 0);
+        uid = mAuth.getUid();
+        fid = settings.getString("fid", "-1");
+        DatabaseReference refChore = FBDB.getReference("Chores").child(fid);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(Dashboard.this, 1);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        myRecyclerView = view.findViewById(R.id.myRecyclerView);
+        fab = view.findViewById(R.id.fab);
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1);
         recyclerView.setLayoutManager(gridLayoutManager);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(Dashboard.this);
+        GridLayoutManager myGridLayoutManager = new GridLayoutManager(getContext(), 1);
+        myRecyclerView.setLayoutManager(myGridLayoutManager);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setCancelable(false);
         builder.setView(R.layout.progress_layout);
         AlertDialog dialog = builder.create();
         dialog.show();
 
-        dataList = new ArrayList<>();
+        chores = new ArrayList<>();
+        myChores = new ArrayList<>();
 
-        adapter = new MyAdapter(Dashboard.this, dataList);
+        adapter = new MyAdapter(getContext(), chores);
+        myAdapter = new MyAdapter(getContext(), myChores);
+
         recyclerView.setAdapter(adapter);
+        myRecyclerView.setAdapter(myAdapter);
 
-        dialog.show();
-        eventListener = refChores.addValueEventListener(new ValueEventListener() {
+        eventListener = refUsers.child(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                dataList.clear();
-                for (DataSnapshot itemSnapshot: snapshot.getChildren()){
-                    Chore chore = itemSnapshot.getValue(Chore.class);
-
-                    chore.setKey(itemSnapshot.getKey());
-
-                    dataList.add(chore);
-                }
-                adapter.notifyDataSetChanged();
+                dialog.show();
+                choreList = snapshot.getValue(User.class).getChores();
+                myChoreList = snapshot.getValue(User.class).getMyChores();
                 dialog.dismiss();
             }
 
@@ -82,66 +92,46 @@ public class Dashboard extends AppCompatActivity {
             }
         });
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        eventListener2 = refChores.child(fid).addValueEventListener(new ValueEventListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                dialog.show();
+                chores.clear();
+                myChores.clear();
+                for (DataSnapshot itemSnapshot : snapshot.getChildren()) {
+                    Chore chore = itemSnapshot.getValue(Chore.class);
+                    if (choreList.contains(chore.getCid())) {
+                        chore.setKey(itemSnapshot.getKey());
+                        chores.add(chore);
+                    }
+                    if (myChoreList.contains(chore.getCid())) {
+                        chore.setKey(itemSnapshot.getKey());
+                        myChores.add(chore);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+                myAdapter.notifyDataSetChanged();
+                dialog.dismiss();
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                searchList(newText);
-                return true;
+            public void onCancelled(@NonNull DatabaseError error) {
+                dialog.dismiss();
             }
         });
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Dashboard.this, UploadActivity.class);
-                startActivity(intent);
-            }
-        });
-
-    }
-
-    public void searchList(String text){
-        ArrayList<Chore> searchList = new ArrayList<>();
-        for (Chore dataClass: dataList){
-            if (dataClass.getTitle().toLowerCase().contains(text.toLowerCase())){
-                searchList.add(dataClass);
-            }
-        }
-        adapter.searchDataList(searchList);
+        return view;
     }
 
     public void logOut(View view) {
         FirebaseAuth.getInstance().signOut();
-        Intent intent = new Intent(Dashboard.this, SignUp.class);
+        Intent intent = new Intent(getActivity(), SignUp.class);
         startActivity(intent);
-        finish();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        String st = item.getTitle().toString();
-        if(st.equals("Log Out")){
-            FirebaseAuth.getInstance().signOut();
-            Intent intent = new Intent(Dashboard.this, SignUp.class);
-            startActivity(intent);
-            finish();
-        }
-        return super.onOptionsItemSelected(item);
+        requireActivity().finish();
     }
 
     public void settings(View view) {
-        Intent intent = new Intent(Dashboard.this, Stngs.class);
+        Intent intent = new Intent(getActivity(), Stngs.class);
         startActivity(intent);
     }
 }

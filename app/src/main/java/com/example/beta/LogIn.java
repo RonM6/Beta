@@ -32,6 +32,7 @@ public class LogIn extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
         mAuth = FirebaseAuth.getInstance();
+
     }
 
     public void login(View view) {
@@ -69,11 +70,11 @@ public class LogIn extends AppCompatActivity {
                                             SharedPreferences.Editor editor=temp.edit();
                                             editor.putString("fid", user.getFamily());
                                             editor.commit();
+                                            DBref.fid = user.getFamily();
                                             Intent intent = new Intent(LogIn.this, Dashboard.class)
                                                     .putExtra("fName", user.getFamily());
                                             startActivity(intent);
                                             finish();
-
                                         }
                                     }
                                 }
@@ -89,7 +90,5 @@ public class LogIn extends AppCompatActivity {
                         }
                     }
                 });
-
-
     }
 }

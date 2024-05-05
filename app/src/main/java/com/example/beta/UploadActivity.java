@@ -1,20 +1,34 @@
 package com.example.beta;
 
+import static androidx.browser.customtabs.CustomTabsClient.getPackageName;
+import static androidx.core.content.ContentProviderCompat.requireContext;
+import static androidx.core.content.FileProvider.getUriForFile;
+import static com.example.beta.DBref.mAuth;
 import static com.example.beta.DBref.refChores;
+import static com.example.beta.DBref.refFamilies;
+import static com.example.beta.DBref.refUsers;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,43 +38,111 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
-public class UploadActivity extends AppCompatActivity {
+public class UploadActivity extends Fragment {
 
-    ImageView uploadImage;
-    Button saveButton;
-    EditText uploadTopic, uploadDesc;
-    String imageURL;
-    Uri uri;
+    private ImageView uploadImage;
+    private EditText uploadTopic, uploadDesc;
+    private Button saveButton;
+    private String imageURL;
+    private Uri uri;
+    private String fid;
+
+    private List<User> dataList;
+    private List<String> stringList;
+    public static List<String> userList;
+    private MyUserAdapter adapter;
+    private ValueEventListener eventListener;
+    private RecyclerView recyclerView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_upload);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.activity_upload, container, false);
+    }
 
-        uploadImage = findViewById(R.id.uploadImage);
-        uploadDesc = findViewById(R.id.uploadDesc);
-        uploadTopic = findViewById(R.id.uploadTopic);
-        saveButton = findViewById(R.id.saveButton);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        SharedPreferences settings = requireActivity().getSharedPreferences("PREFS_NAME", Activity.MODE_PRIVATE);
+        fid = settings.getString("fid", "-1");
+
+        recyclerView = view.findViewById(R.id.recyclerView1);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(requireContext(), 1);
+        recyclerView.setLayoutManager(gridLayoutManager);
+
+        dataList = new ArrayList<>();
+        stringList = new ArrayList<>();
+        userList = new ArrayList<>();
+        adapter = new MyUserAdapter(requireContext(), dataList);
+        recyclerView.setAdapter(adapter);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setCancelable(false);
+        builder.setView(R.layout.progress_layout);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        eventListener = DBref.refFamilies.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                dataList.clear();
+                stringList = snapshot.child(fid).getValue(Family.class).getUsers();
+
+                eventListener = DBref.refUsers.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snap) {
+                        for (DataSnapshot item : snap.getChildren()) {
+                            User user = item.getValue(User.class);
+                            if (stringList.contains(user.getUid())) {
+                                dataList.add(user);
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        uploadImage = view.findViewById(R.id.uploadImage);
+        uploadDesc = view.findViewById(R.id.uploadDesc);
+        uploadTopic = view.findViewById(R.id.uploadTopic);
+        saveButton = view.findViewById(R.id.saveButton);
 
         ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == Activity.RESULT_OK){
+                        if (result.getResultCode() == Activity.RESULT_OK) {
                             Intent data = result.getData();
                             uri = data.getData();
                             uploadImage.setImageURI(uri);
                         } else {
-                            Toast.makeText(UploadActivity.this, "No Image Selected", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireContext(), "No Image Selected", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -83,12 +165,14 @@ public class UploadActivity extends AppCompatActivity {
         });
     }
 
+
+
     public void saveData(){
 
         StorageReference storageReference = FirebaseStorage.getInstance("gs://beta-52e80.appspot.com").getReference().child("Android Images")
                 .child(uri.getLastPathSegment());
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(UploadActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
         builder.setCancelable(false);
         builder.setView(R.layout.progress_layout);
         AlertDialog dialog = builder.create();
@@ -117,28 +201,97 @@ public class UploadActivity extends AppCompatActivity {
 
         String title = uploadTopic.getText().toString();
         String desc = uploadDesc.getText().toString();
+        String creator = mAuth.getUid();
+        String cid = String.valueOf(System.currentTimeMillis());
 
-        Chore chore = new Chore(title, desc, imageURL);
+        Chore chore = new Chore(title, desc, imageURL, creator, "a", cid);
 
         //We are changing the child from title to currentDate,
         // because we will be updating title as well and it may affect child value.
 
         String currentDate = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
 
-        refChores.child(currentDate)
+        refUsers.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (task.isSuccessful()){
+                    DataSnapshot snapshot = task.getResult();
+                    for (DataSnapshot item : snapshot.getChildren()){
+                        User user = item.getValue(User.class);
+                        if (userList.contains(user.getUid())){
+                            user.addChore(cid);
+                            refUsers.child(user.getUid()).setValue(user);
+                            userList.remove(user.getUid());
+                        }
+                        if (user.getUid().toString().equals(mAuth.getUid().toString())){
+                            user.addMyChore(cid);
+                            refUsers.child(user.getUid()).setValue(user);
+                        }
+                    }
+                }
+            }
+
+        });
+
+        refChores.child(fid).child(currentDate)
                 .setValue(chore).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()){
-                            Toast.makeText(UploadActivity.this, "Saved", Toast.LENGTH_SHORT).show();
-                            finish();
+                            Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
+                            if (getActivity() instanceof MainActivity) {
+                                ((MainActivity) getActivity()).onTaskComplete();
+                            }
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(UploadActivity.this, e.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), e.getMessage().toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
+
+
+//    public void dishes(View view) {
+//        String packageName = getPackageName();
+//
+//        int resourceId = R.drawable.washing_dishes;
+//
+//        uri = Uri.parse("android.resource://" + packageName + "/" + resourceId);
+//        uploadTopic.setText("Dishes");
+//        uploadDesc.setText("Wash the dishes");
+//
+//    }
+
+//    public void laundry(View view) {
+//        String packageName = getPackageName();
+//
+//        int resourceId = R.drawable.laundry_machine;
+//
+//        uri = Uri.parse("android.resource://" + packageName + "/" + resourceId);
+//        uploadTopic.setText("Laundry");
+//        uploadDesc.setText("Fold the laundry");
+//
+//    }
+//
+//    public void vacuum(View view) {
+//        String packageName = getPackageName();
+//
+//        int resourceId = R.drawable.vacuum;
+//
+//        uri = Uri.parse("android.resource://" + packageName + "/" + resourceId);
+//        uploadTopic.setText("Vacuum");
+//        uploadDesc.setText("Vacuum the floor");
+//    }
+//
+//    public void trash(View view) {
+//        String packageName = getPackageName();
+//
+//        int resourceId = R.drawable.trash;
+//
+//        uri = Uri.parse("android.resource://" + packageName + "/" + resourceId);
+//        uploadTopic.setText("Trash");
+//        uploadDesc.setText("Take out the trash");
+//    }
 }

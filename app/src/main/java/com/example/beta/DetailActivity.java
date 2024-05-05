@@ -3,6 +3,7 @@ package com.example.beta;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,11 +25,14 @@ public class DetailActivity extends AppCompatActivity {
     FloatingActionButton deleteButton, editButton;
     String key = "";
     String imageUrl = "";
+    String fid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        SharedPreferences settings = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
+        fid = settings.getString("fid", "-1");
 
         detailDesc = findViewById(R.id.detailDesc);
         detailImage = findViewById(R.id.detailImage);
@@ -47,7 +51,8 @@ public class DetailActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final DatabaseReference reference = FirebaseDatabase.getInstance("https://beta-52e80-default-rtdb.europe-west1.firebasedatabase.app").getReference("Chores");
+                final DatabaseReference reference = FirebaseDatabase.getInstance("https://beta-52e80-default-rtdb.europe-west1.firebasedatabase.app")
+                        .getReference("Chores").child(fid);
                 FirebaseStorage storage = FirebaseStorage.getInstance("gs://beta-52e80.appspot.com");
 
                 StorageReference storageReference = storage.getReferenceFromUrl(imageUrl);

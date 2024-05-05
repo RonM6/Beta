@@ -3,11 +3,13 @@ plugins {
     id("com.google.gms.google-services")
 }
 
+
 android {
     namespace = "com.example.beta"
     compileSdk = 34
 
     defaultConfig {
+
         applicationId = "com.example.beta"
         minSdk = 30
         targetSdk = 34
@@ -15,7 +17,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+
     }
+
 
     buildTypes {
         release {
@@ -26,6 +31,11 @@ android {
             )
         }
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -43,11 +53,12 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
 
+
+
     implementation ("com.github.bumptech.glide:glide:4.14.2")
     implementation(libs.firebase.storage)
     annotationProcessor ("com.github.bumptech.glide:compiler:4.14.2")
     implementation ("com.github.clans:fab:1.6.4")
-
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
