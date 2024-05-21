@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".UploadActivity">
     <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -34,13 +32,8 @@
                 android:background="@drawable/lavender_border"
                 android:orientation="horizontal">
 
-                <Space
-                    android:layout_width="300dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
-
                 <ImageView
-                    android:id="@+id/uploadImage1"
+                    android:id="@+id/dishes"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="10dp"
@@ -50,7 +43,7 @@
                     android:src="@drawable/washing_dishes" />
 
                 <ImageView
-                    android:id="@+id/uploadImage2"
+                    android:id="@+id/laundry"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="10dp"
@@ -61,7 +54,7 @@
                     android:src="@drawable/laundry_machine" />
 
                 <ImageView
-                    android:id="@+id/uploadImage3"
+                    android:id="@+id/vacuum"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="10dp"
@@ -72,7 +65,7 @@
                     android:src="@drawable/vacuum" />
 
                 <ImageView
-                    android:id="@+id/uploadImage4"
+                    android:id="@+id/trash"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="10dp"
@@ -92,10 +85,6 @@
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_baseline_add_24" />
 
-                <Space
-                    android:layout_width="300dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
             </LinearLayout>
 
             <EditText
@@ -128,12 +117,13 @@
                 android:id="@+id/button3"
                 android:layout_width="match_parent"
                 android:layout_height="75dp"
-                android:text="Pick Due Time" />
+                android:text="Pick Due Time"
+                app:cornerRadius="30dp"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView1"
                 android:layout_width="match_parent"
-                android:layout_height="280dp"
+                android:layout_height="200dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/lavender_border"
                 android:scrollbars="vertical" />
@@ -148,6 +138,11 @@
                 android:textSize="18sp"
                 app:cornerRadius="20dp" />
 
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
     </ScrollView>
+
 </FrameLayout>

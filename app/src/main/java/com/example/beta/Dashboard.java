@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Dashboard extends Fragment {
-    FloatingActionButton fab;
     ValueEventListener eventListener, eventListener2;
     RecyclerView recyclerView, myRecyclerView;
     List<Chore> chores;
@@ -50,11 +49,9 @@ public class Dashboard extends Fragment {
         SharedPreferences settings = requireActivity().getSharedPreferences("PREFS_NAME", 0);
         uid = mAuth.getUid();
         fid = settings.getString("fid", "-1");
-        DatabaseReference refChore = FBDB.getReference("Chores").child(fid);
 
         recyclerView = view.findViewById(R.id.recyclerView);
         myRecyclerView = view.findViewById(R.id.myRecyclerView);
-        fab = view.findViewById(R.id.fab);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -123,15 +120,4 @@ public class Dashboard extends Fragment {
         return view;
     }
 
-    public void logOut(View view) {
-        FirebaseAuth.getInstance().signOut();
-        Intent intent = new Intent(getActivity(), SignUp.class);
-        startActivity(intent);
-        requireActivity().finish();
-    }
-
-    public void settings(View view) {
-        Intent intent = new Intent(getActivity(), Stngs.class);
-        startActivity(intent);
-    }
 }

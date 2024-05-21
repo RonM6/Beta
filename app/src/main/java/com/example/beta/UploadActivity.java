@@ -53,11 +53,11 @@ import java.util.List;
 
 public class UploadActivity extends Fragment {
 
-    private ImageView uploadImage;
-    private EditText uploadTopic, uploadDesc;
+    private ImageView uploadImage, dishes, laundry, vacuum, trash;
+    public static EditText uploadTopic, uploadDesc;
     private Button saveButton;
     private String imageURL;
-    private Uri uri;
+    public static Uri uri;
     private String fid;
 
     private List<User> dataList;
@@ -128,6 +128,10 @@ public class UploadActivity extends Fragment {
         });
 
         uploadImage = view.findViewById(R.id.uploadImage);
+        dishes = view.findViewById(R.id.dishes);
+        laundry = view.findViewById(R.id.laundry);
+        vacuum = view.findViewById(R.id.vacuum);
+        trash = view.findViewById(R.id.trash);
         uploadDesc = view.findViewById(R.id.uploadDesc);
         uploadTopic = view.findViewById(R.id.uploadTopic);
         saveButton = view.findViewById(R.id.saveButton);
@@ -251,47 +255,4 @@ public class UploadActivity extends Fragment {
                     }
                 });
     }
-
-
-//    public void dishes(View view) {
-//        String packageName = getPackageName();
-//
-//        int resourceId = R.drawable.washing_dishes;
-//
-//        uri = Uri.parse("android.resource://" + packageName + "/" + resourceId);
-//        uploadTopic.setText("Dishes");
-//        uploadDesc.setText("Wash the dishes");
-//
-//    }
-
-//    public void laundry(View view) {
-//        String packageName = getPackageName();
-//
-//        int resourceId = R.drawable.laundry_machine;
-//
-//        uri = Uri.parse("android.resource://" + packageName + "/" + resourceId);
-//        uploadTopic.setText("Laundry");
-//        uploadDesc.setText("Fold the laundry");
-//
-//    }
-//
-//    public void vacuum(View view) {
-//        String packageName = getPackageName();
-//
-//        int resourceId = R.drawable.vacuum;
-//
-//        uri = Uri.parse("android.resource://" + packageName + "/" + resourceId);
-//        uploadTopic.setText("Vacuum");
-//        uploadDesc.setText("Vacuum the floor");
-//    }
-//
-//    public void trash(View view) {
-//        String packageName = getPackageName();
-//
-//        int resourceId = R.drawable.trash;
-//
-//        uri = Uri.parse("android.resource://" + packageName + "/" + resourceId);
-//        uploadTopic.setText("Trash");
-//        uploadDesc.setText("Take out the trash");
-//    }
 }

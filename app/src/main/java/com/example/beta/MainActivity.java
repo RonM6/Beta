@@ -1,10 +1,12 @@
 package com.example.beta;
 
 import androidx.appcompat.app.AppCompatActivity;
+import com.example.beta.R;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,11 +18,6 @@ import com.example.beta.UpdateActivity;
 import com.example.beta.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
-    private static final int MENU_HOME = 1;
-    private static final int MENU_FAMILY = 2;
-    private static final int MENU_DONE = 3;
-    private static final int MENU_SETTINGS = 4;
-
 
     ActivityMainBinding binding;
 
@@ -34,21 +31,21 @@ public class MainActivity extends AppCompatActivity {
         binding.bottomNavigationView.setBackground(null);
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
+            String id = item.toString();
 
-            int itemId = item.getItemId();
-            switch (itemId) {
-                case MENU_HOME:
+            switch (id) {
+                case "Home":
                     replaceFragment(new Dashboard());
                     break;
-                case MENU_FAMILY:
-                    replaceFragment(new UploadActivity());
+                case "Family Chores":
+                    replaceFragment(new FamilyChores());
                     break;
-                case MENU_DONE:
-
-                case MENU_SETTINGS:
+                case "Done Chores":
+                    replaceFragment(new DoneChores());
+                    break;
+                case "Setting":
                     replaceFragment(new Stngs());
                     break;
-
             }
 
             return true;
@@ -76,6 +73,46 @@ public class MainActivity extends AppCompatActivity {
         if (UploadActivity.userList.contains(uid)){
             Toast.makeText(this, "Added ", Toast.LENGTH_SHORT).show();
         }
+    }
+    public void dishes(View view) {
+        String packageName = getPackageName();
+
+        int resourceId = R.drawable.washing_dishes;
+
+        UploadActivity.uri = Uri.parse("android.resource://" + packageName + "/" + resourceId);
+        UploadActivity.uploadTopic.setText("Dishes");
+        UploadActivity.uploadDesc.setText("Wash the dishes");
+
+
+    }
+    public void laundry(View view) {
+        String packageName = getPackageName();
+
+        int resourceId = R.drawable.laundry_machine;
+
+        UploadActivity.uri = Uri.parse("android.resource://" + packageName + "/" + resourceId);
+        UploadActivity.uploadTopic.setText("Laundry");
+        UploadActivity.uploadDesc.setText("Fold the laundry");
+    }
+
+    public void vacuum(View view) {
+        String packageName = getPackageName();
+
+        int resourceId = R.drawable.vacuum;
+
+        UploadActivity.uri = Uri.parse("android.resource://" + packageName + "/" + resourceId);
+        UploadActivity.uploadTopic.setText("Vacuum");
+        UploadActivity.uploadDesc.setText("Vacuum the floor");
+    }
+
+    public void trash(View view) {
+        String packageName = getPackageName();
+
+        int resourceId = R.drawable.trash;
+
+        UploadActivity.uri = Uri.parse("android.resource://" + packageName + "/" + resourceId);
+        UploadActivity.uploadTopic.setText("Trash");
+        UploadActivity.uploadDesc.setText("Take out the trash");
     }
     public void removeChoreToUser(String uid){
         UploadActivity.userList.remove(uid);

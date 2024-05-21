@@ -3,6 +3,7 @@ package com.example.beta;
 
 
 import static com.example.beta.DBref.refChores;
+import static com.example.beta.DBref.refDChores;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -27,7 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FamilyChores extends Fragment {
+public class DoneChores extends Fragment {
     ValueEventListener eventListener;
     List<Chore> chores;
     RecyclerView recyclerView;
@@ -61,7 +62,7 @@ public class FamilyChores extends Fragment {
 
         recyclerView.setAdapter(adapter);
 
-        eventListener = refChores.child(fid).addValueEventListener(new ValueEventListener() {
+        eventListener = refDChores.child(fid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 chores.clear();
