@@ -38,7 +38,6 @@ public class DetailActivity extends AppCompatActivity {
         detailImage = findViewById(R.id.detailImage);
         detailTitle = findViewById(R.id.detailTitle);
         deleteButton = findViewById(R.id.deleteButton);
-        editButton = findViewById(R.id.editButton);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
@@ -67,16 +66,6 @@ public class DetailActivity extends AppCompatActivity {
                 });
             }
         });
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(DetailActivity.this, UpdateActivity.class)
-                        .putExtra("Title", detailTitle.getText().toString())
-                        .putExtra("Description", detailDesc.getText().toString())
-                        .putExtra("Image", imageUrl)
-                        .putExtra("Key", key);
-                startActivity(intent);
-            }
-        });
+
     }
 }

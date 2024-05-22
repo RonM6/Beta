@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -68,60 +69,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void addChoreToUser(String uid){
-        UploadActivity.userList.add(uid);
-        if (UploadActivity.userList.contains(uid)){
-            Toast.makeText(this, "Added ", Toast.LENGTH_SHORT).show();
-        }
-    }
-    public void dishes(View view) {
-        String packageName = getPackageName();
-
-        int resourceId = R.drawable.washing_dishes;
-
-        UploadActivity.uri = Uri.parse("android.resource://" + packageName + "/" + resourceId);
-        UploadActivity.uploadTopic.setText("Dishes");
-        UploadActivity.uploadDesc.setText("Wash the dishes");
-
-
-    }
-    public void laundry(View view) {
-        String packageName = getPackageName();
-
-        int resourceId = R.drawable.laundry_machine;
-
-        UploadActivity.uri = Uri.parse("android.resource://" + packageName + "/" + resourceId);
-        UploadActivity.uploadTopic.setText("Laundry");
-        UploadActivity.uploadDesc.setText("Fold the laundry");
-    }
-
-    public void vacuum(View view) {
-        String packageName = getPackageName();
-
-        int resourceId = R.drawable.vacuum;
-
-        UploadActivity.uri = Uri.parse("android.resource://" + packageName + "/" + resourceId);
-        UploadActivity.uploadTopic.setText("Vacuum");
-        UploadActivity.uploadDesc.setText("Vacuum the floor");
-    }
-
-    public void trash(View view) {
-        String packageName = getPackageName();
-
-        int resourceId = R.drawable.trash;
-
-        UploadActivity.uri = Uri.parse("android.resource://" + packageName + "/" + resourceId);
-        UploadActivity.uploadTopic.setText("Trash");
-        UploadActivity.uploadDesc.setText("Take out the trash");
-    }
-    public void removeChoreToUser(String uid){
-        UploadActivity.userList.remove(uid);
-        if (!UploadActivity.userList.contains(uid)){
-            Toast.makeText(this, "Removed ", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     public void newChore(View view) {
-        replaceFragment(new UploadActivity());
+        startActivity(new Intent(this, UploadActivity.class));
     }
 }

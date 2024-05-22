@@ -1,7 +1,5 @@
 package com.example.beta;
 
-import static androidx.browser.customtabs.CustomTabsClient.getPackageName;
-import static androidx.core.content.ContentProviderCompat.requireContext;
 import static androidx.core.content.FileProvider.getUriForFile;
 import static com.example.beta.DBref.mAuth;
 import static com.example.beta.DBref.refChores;
@@ -13,9 +11,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,9 +22,7 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -51,60 +45,59 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class UploadActivity extends Fragment {
+public class UploadActivity extends AppCompatActivity {
 
-    private ImageView uploadImage, dishes, laundry, vacuum, trash;
-    public static EditText uploadTopic, uploadDesc;
-    private Button saveButton;
-    private String imageURL;
-    public static Uri uri;
-    private String fid;
+    ImageView uploadImage;
+    ImageView dishesIV, laundryIV, vacuumIV, trashIV;
+    ValueEventListener eventListener;
+    RecyclerView recyclerView;
+    List<User> dataList;
+    List<String> stringList;
+    List<String> userList;
+    MyUserAdapter adapter;
+    Button saveButton;
+    EditText uploadTopic, uploadDesc;
+    String imageURL;
+    Uri uri;
+    String fid;
 
-    private List<User> dataList;
-    private List<String> stringList;
-    public static List<String> userList;
-    private MyUserAdapter adapter;
-    private ValueEventListener eventListener;
-    private RecyclerView recyclerView;
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.activity_upload, container, false);
-    }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_upload);
 
-        SharedPreferences settings = requireActivity().getSharedPreferences("PREFS_NAME", Activity.MODE_PRIVATE);
+
+
+        SharedPreferences settings = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
         fid = settings.getString("fid", "-1");
-
-        recyclerView = view.findViewById(R.id.recyclerView1);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(requireContext(), 1);
+        recyclerView = findViewById(R.id.recyclerView1);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(UploadActivity.this, 1);
         recyclerView.setLayoutManager(gridLayoutManager);
 
         dataList = new ArrayList<>();
         stringList = new ArrayList<>();
         userList = new ArrayList<>();
-        adapter = new MyUserAdapter(requireContext(), dataList);
+        adapter = new MyUserAdapter(UploadActivity.this, dataList);
         recyclerView.setAdapter(adapter);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(UploadActivity.this);
         builder.setCancelable(false);
         builder.setView(R.layout.progress_layout);
         AlertDialog dialog = builder.create();
         dialog.show();
 
-        eventListener = DBref.refFamilies.addValueEventListener(new ValueEventListener() {
+
+        eventListener = refFamilies.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 dataList.clear();
                 stringList = snapshot.child(fid).getValue(Family.class).getUsers();
 
-                eventListener = DBref.refUsers.addValueEventListener(new ValueEventListener() {
+                eventListener = refUsers.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snap) {
-                        for (DataSnapshot item : snap.getChildren()) {
+                        for (DataSnapshot item : snap.getChildren()){
                             User user = item.getValue(User.class);
                             if (stringList.contains(user.getUid())) {
                                 dataList.add(user);
@@ -127,26 +120,23 @@ public class UploadActivity extends Fragment {
             }
         });
 
-        uploadImage = view.findViewById(R.id.uploadImage);
-        dishes = view.findViewById(R.id.dishes);
-        laundry = view.findViewById(R.id.laundry);
-        vacuum = view.findViewById(R.id.vacuum);
-        trash = view.findViewById(R.id.trash);
-        uploadDesc = view.findViewById(R.id.uploadDesc);
-        uploadTopic = view.findViewById(R.id.uploadTopic);
-        saveButton = view.findViewById(R.id.saveButton);
+
+        uploadImage = findViewById(R.id.uploadImage);
+        uploadDesc = findViewById(R.id.uploadDesc);
+        uploadTopic = findViewById(R.id.uploadTopic);
+        saveButton = findViewById(R.id.saveButton);
 
         ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == Activity.RESULT_OK) {
+                        if (result.getResultCode() == Activity.RESULT_OK){
                             Intent data = result.getData();
                             uri = data.getData();
                             uploadImage.setImageURI(uri);
                         } else {
-                            Toast.makeText(requireContext(), "No Image Selected", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(UploadActivity.this, "No Image Selected", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -169,14 +159,25 @@ public class UploadActivity extends Fragment {
         });
     }
 
-
+    public void addChoreToUser(String uid){
+        userList.add(uid);
+        if (userList.contains(uid)){
+            Toast.makeText(this, "Added ", Toast.LENGTH_SHORT).show();
+        }
+    }
+    public void removeChoreToUser(String uid){
+        userList.remove(uid);
+        if (!userList.contains(uid)){
+            Toast.makeText(this, "Removed ", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     public void saveData(){
 
         StorageReference storageReference = FirebaseStorage.getInstance("gs://beta-52e80.appspot.com").getReference().child("Android Images")
                 .child(uri.getLastPathSegment());
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(UploadActivity.this);
         builder.setCancelable(false);
         builder.setView(R.layout.progress_layout);
         AlertDialog dialog = builder.create();
@@ -242,17 +243,58 @@ public class UploadActivity extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()){
-                            Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
-                            if (getActivity() instanceof MainActivity) {
-                                ((MainActivity) getActivity()).onTaskComplete();
-                            }
+                            Toast.makeText(UploadActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(getApplicationContext(), Dashboard.class));
+                            finish();
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getContext(), e.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UploadActivity.this, e.getMessage().toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    public void dishes(View view) {
+        String packageName = getPackageName();
+
+        int resourceId = R.drawable.washing_dishes;
+
+        uri = Uri.parse("android.resource://" + packageName + "/" + resourceId);
+        uploadTopic.setText("Dishes");
+        uploadDesc.setText("Wash the dishes");
+
+    }
+
+    public void laundry(View view) {
+        String packageName = getPackageName();
+
+        int resourceId = R.drawable.laundry_machine;
+
+        uri = Uri.parse("android.resource://" + packageName + "/" + resourceId);
+        uploadTopic.setText("Laundry");
+        uploadDesc.setText("Fold the laundry");
+
+    }
+
+    public void vacuum(View view) {
+        String packageName = getPackageName();
+
+        int resourceId = R.drawable.vacuum;
+
+        uri = Uri.parse("android.resource://" + packageName + "/" + resourceId);
+        uploadTopic.setText("Vacuum");
+        uploadDesc.setText("Vacuum the floor");
+    }
+
+    public void trash(View view) {
+        String packageName = getPackageName();
+
+        int resourceId = R.drawable.trash;
+
+        uri = Uri.parse("android.resource://" + packageName + "/" + resourceId);
+        uploadTopic.setText("Trash");
+        uploadDesc.setText("Take out the trash");
     }
 }

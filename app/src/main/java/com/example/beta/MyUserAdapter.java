@@ -43,13 +43,11 @@ public class MyUserAdapter extends RecyclerView.Adapter<MyUserViewHolder> {
         holder.recCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (context instanceof MainActivity){
+                if (context instanceof UploadActivity){
                     if (holder.recCheck.isChecked()){
-                        Toast.makeText(context, holder.recName.getText(), Toast.LENGTH_SHORT).show();
-                        ((MainActivity) context).addChoreToUser(dataList.get(position).getUid());
+                        ((UploadActivity) context).addChoreToUser(dataList.get(position).getUid());
                     }else{
-                        Toast.makeText(context, "Unchecked", Toast.LENGTH_SHORT).show();
-                        ((MainActivity) context).removeChoreToUser(dataList.get(position).getUid());
+                        ((UploadActivity) context).removeChoreToUser(dataList.get(position).getUid());
                     }
                 }
             }
