@@ -112,11 +112,12 @@
             android:layout_height="19dp" />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/timePick"
             android:layout_width="match_parent"
             android:layout_height="75dp"
-            android:text="Pick Due Time"
-            app:cornerRadius="35dp"/>
+            android:onClick="showDatePicker"
+            android:text="Pick Due"
+            app:cornerRadius="35dp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView1"

@@ -1,11 +1,13 @@
 package com.example.beta;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,12 +17,34 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class Stngs extends Fragment {
+    Button logoutBT;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.activity_stngs, container, false);
+        View view = inflater.inflate(R.layout.activity_stngs, container, false);
+
+        logoutBT = view.findViewById(R.id.loguotBT);
+        logoutBT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                SharedPreferences temp;
+                temp = requireActivity().getSharedPreferences("PREFS_NAME", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor=temp.edit();
+                editor.putString("fid", "-1");
+                editor.commit();
+                Intent intent = new Intent(getContext(), SignUp.class);
+                startActivity(intent);
+                requireActivity().finish();
+            }
+        });
+
+        return view;
+
     }
 
     @Override
@@ -38,5 +62,8 @@ public class Stngs extends Fragment {
 
         TextView textView = view.findViewById(R.id.fidtv);
         textView.setText(fid);
+
+
+
     }
 }

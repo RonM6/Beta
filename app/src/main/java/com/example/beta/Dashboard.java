@@ -47,8 +47,8 @@ public class Dashboard extends Fragment {
         View view = inflater.inflate(R.layout.activity_dashboard, container, false);
 
         SharedPreferences settings = requireActivity().getSharedPreferences("PREFS_NAME", 0);
-        uid = mAuth.getUid();
         fid = settings.getString("fid", "-1");
+        uid = mAuth.getUid();
 
         recyclerView = view.findViewById(R.id.recyclerView);
         myRecyclerView = view.findViewById(R.id.myRecyclerView);

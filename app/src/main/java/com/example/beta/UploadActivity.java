@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
@@ -24,14 +26,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -41,9 +46,13 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.text.DateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class UploadActivity extends AppCompatActivity {
 
@@ -60,6 +69,10 @@ public class UploadActivity extends AppCompatActivity {
     String imageURL;
     Uri uri;
     String fid;
+    int minute, hour;
+    LocalDate date = LocalDate.now();
+    DayOfWeek day;
+    String sdate;
 
 
     @Override
@@ -296,5 +309,46 @@ public class UploadActivity extends AppCompatActivity {
         uri = Uri.parse("android.resource://" + packageName + "/" + resourceId);
         uploadTopic.setText("Trash");
         uploadDesc.setText("Take out the trash");
+    }
+
+    public void timePick() {
+        TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                hour = selectedHour;
+                minute = selectedMinute;
+                dueTime.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+            }
+        };
+
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar,onTimeSetListener, hour, minute, true);
+        timePickerDialog.setTitle("Select beginning Time");
+        timePickerDialog.show();
+    }
+
+    public void showDatePicker(View view) {
+        int year = date.getYear();
+        int month = date.getMonthValue() - 1; // Months are zero-based in DatePickerDialog
+        int dayOfMonth = date.getDayOfMonth();
+
+        // Create a DatePickerDialog and set the current date as default
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                // Update selectedDate with the chosen date
+                date = LocalDate.of(year, month + 1, dayOfMonth); // Month is zero-based
+                day = date.getDayOfWeek();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy");
+                sdate = date.format(formatter);
+                dayAndDate.setText(sdate+" "+day);
+
+
+                setHours();
+                timePick();
+            }
+        }, year, month, dayOfMonth);
+
+        // Show the DatePickerDialog
+        datePickerDialog.show();
     }
 }
