@@ -67,7 +67,9 @@ public class FamilyChores extends Fragment {
                 chores.clear();
                 for (DataSnapshot choreSnapshot : snapshot.getChildren()) {
                     Chore chore = choreSnapshot.getValue(Chore.class);
-                    chores.add(chore);
+                    if (chore.getStatus().equals("a")){
+                        chores.add(chore);
+                    }
                 }
                 adapter.notifyDataSetChanged();
                 dialog.dismiss();

@@ -57,7 +57,6 @@ import java.util.Locale;
 public class UploadActivity extends AppCompatActivity {
 
     ImageView uploadImage;
-    ImageView dishesIV, laundryIV, vacuumIV, trashIV;
     ValueEventListener eventListener;
     RecyclerView recyclerView;
     List<User> dataList;
@@ -73,6 +72,7 @@ public class UploadActivity extends AppCompatActivity {
     LocalDate date = LocalDate.now();
     DayOfWeek day;
     String sdate;
+    Button timePick;
 
 
     @Override
@@ -138,6 +138,7 @@ public class UploadActivity extends AppCompatActivity {
         uploadDesc = findViewById(R.id.uploadDesc);
         uploadTopic = findViewById(R.id.uploadTopic);
         saveButton = findViewById(R.id.saveButton);
+        timePick = findViewById(R.id.timePick);
 
         ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -223,6 +224,9 @@ public class UploadActivity extends AppCompatActivity {
         String cid = String.valueOf(System.currentTimeMillis());
 
         Chore chore = new Chore(title, desc, imageURL, creator, "a", cid);
+        chore.setDueDate(sdate);
+        chore.setDueTime(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+        chore.setStatus("a");
 
         //We are changing the child from title to currentDate,
         // because we will be updating title as well and it may affect child value.
@@ -317,12 +321,12 @@ public class UploadActivity extends AppCompatActivity {
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                 hour = selectedHour;
                 minute = selectedMinute;
-                dueTime.setText(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                timePick.setText(timePick.getText().toString()+" "+String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
             }
         };
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar,onTimeSetListener, hour, minute, true);
-        timePickerDialog.setTitle("Select beginning Time");
+        timePickerDialog.setTitle("Select due Time");
         timePickerDialog.show();
     }
 
@@ -340,10 +344,8 @@ public class UploadActivity extends AppCompatActivity {
                 day = date.getDayOfWeek();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy");
                 sdate = date.format(formatter);
-                dayAndDate.setText(sdate+" "+day);
+                timePick.setText(sdate+" "+day);
 
-
-                setHours();
                 timePick();
             }
         }, year, month, dayOfMonth);

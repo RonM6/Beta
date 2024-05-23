@@ -77,16 +77,21 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
                         if (task.isSuccessful()){
                             Chore chore = task.getResult().getValue(Chore.class);
-                            chore.setWhoEnded(mAuth.getUid());
-                            refDChores.child(DBref.fid).child(dataList.get(holder.getAdapterPosition()).getKey()).setValue(chore);
-
-                        }
-                        reference.child(dataList.get(holder.getAdapterPosition()).getKey()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                Toast.makeText(context, "Chore completed", Toast.LENGTH_SHORT).show();
+                            if (chore.getStatus().equals("d")) {
+                                reference.child(dataList.get(holder.getAdapterPosition()).getKey()).removeValue();
                             }
-                        });
+                            if(chore.getStatus().equals("a")){
+                                chore.setWhoEnded(mAuth.getUid());
+                                chore.setStatus("d");
+                                reference.child(dataList.get(holder.getAdapterPosition()).getKey()).setValue(chore).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Toast.makeText(context, "Chore completed", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                });
+                            }
+                        }
                     }
                 });
             }

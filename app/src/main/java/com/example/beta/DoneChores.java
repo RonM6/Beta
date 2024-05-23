@@ -62,13 +62,15 @@ public class DoneChores extends Fragment {
 
         recyclerView.setAdapter(adapter);
 
-        eventListener = refDChores.child(fid).addValueEventListener(new ValueEventListener() {
+        eventListener = refChores.child(fid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 chores.clear();
                 for (DataSnapshot choreSnapshot : snapshot.getChildren()) {
                     Chore chore = choreSnapshot.getValue(Chore.class);
-                    chores.add(chore);
+                    if(chore.getStatus().equals("d")){
+                        chores.add(chore);
+                    }
                 }
                 adapter.notifyDataSetChanged();
                 dialog.dismiss();

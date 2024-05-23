@@ -97,11 +97,11 @@ public class Dashboard extends Fragment {
                 myChores.clear();
                 for (DataSnapshot itemSnapshot : snapshot.getChildren()) {
                     Chore chore = itemSnapshot.getValue(Chore.class);
-                    if (choreList.contains(chore.getCid())) {
+                    if (choreList.contains(chore.getCid()) & chore.getStatus().equals("a")) {
                         chore.setKey(itemSnapshot.getKey());
                         chores.add(chore);
                     }
-                    if (myChoreList.contains(chore.getCid())) {
+                    if (myChoreList.contains(chore.getCid())& chore.getStatus().equals("a")) {
                         chore.setKey(itemSnapshot.getKey());
                         myChores.add(chore);
                     }
