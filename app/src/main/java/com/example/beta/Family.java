@@ -7,30 +7,50 @@ public class Family {
     private String name;
     private ArrayList<String> users = new ArrayList<String>();
 
-    public Family(String name, String fid){
+    public Family(String name, String fid) {
 
         this.name = name;
         this.fid = fid;
     }
-    public Family(){
 
+    public Family() {
+
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getFName() {
         return this.name;
     }
+
     public void setFName(String name) {
-        this.name=name;
+        this.name = name;
     }
-    public String getFid() { return fid; }
+
+    public String getFid() {
+        return fid;
+    }
+
     public void setFid(String fid) {
-        this.fid=fid;
+        this.fid = fid;
     }
-    public void addUser(String uid){
+
+    public void addUser(String uid) {
         this.users.add(uid);
     }
-    public ArrayList<String> getUsers(){
+
+    public ArrayList<String> getUsers() {
         return this.users;
+    }
+
+    public void setUsers(ArrayList<String> users) {
+        this.users = users;
     }
 
 }

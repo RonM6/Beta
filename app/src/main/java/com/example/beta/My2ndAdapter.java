@@ -1,7 +1,5 @@
 package com.example.beta;
 
-import static com.example.beta.AlarmHelper.cancelAlarm;
-import static com.example.beta.DBref.fid;
 import static com.example.beta.DBref.mAuth;
 import static com.example.beta.DBref.refChores;
 import static com.example.beta.DBref.refUsers;
@@ -31,38 +29,31 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
+public class My2ndAdapter extends RecyclerView.Adapter<My2ndViewHolder> {
 
     private Context context;
     private List<Chore> dataList;
 
-    public MyAdapter(Context context, List<Chore> dataList) {
+    public My2ndAdapter(Context context, List<Chore> dataList) {
         this.context = context;
         this.dataList = dataList;
     }
 
     @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public My2ndViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item, parent, false);
-        return new MyViewHolder(view);
+        return new My2ndViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull My2ndViewHolder holder, int position) {
         Glide.with(context).load(dataList.get(position).getDataImage()).into(holder.recImage);
         holder.recTitle.setText(dataList.get(position).getTitle());
         holder.recDesc.setText(dataList.get(position).getDescription());
 
         Chore currentChore = dataList.get(holder.getAdapterPosition());
 
-        if(currentChore.getStatus().equals("a")) {
-            if (!AlarmHelper.isAlarmSet(context, currentChore.getCid())) {
-                AlarmHelper.setAlarm(context, currentChore.getCid(), currentChore.getDueDate(), currentChore.getDueTime(), currentChore.getTitle());
-            }
-        }else if(currentChore.getStatus().equals("d")) {
-            cancelAlarm(context, currentChore.getCid());
-        }
 
         holder.recCard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,7 +108,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
                                         });
                                     }
                                     if(chore.getStatus().equals("a")){
-                                        cancelAlarm(context, chore.getCid());
                                         chore.setWhoEnded(mAuth.getUid());
                                         chore.setStatus("d");
                                         reference.child(currentChore.getKey()).setValue(chore).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -161,14 +151,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         return dataList.size();
     }
 }
-
-class MyViewHolder extends RecyclerView.ViewHolder {
+class My2ndViewHolder extends RecyclerView.ViewHolder {
 
     ImageView recImage, recCheck;
     TextView recTitle, recDesc;
     CardView recCard;
 
-    public MyViewHolder(@NonNull View itemView) {
+    public My2ndViewHolder(@NonNull View itemView) {
         super(itemView);
 
         recImage = itemView.findViewById(R.id.recImage);

@@ -35,9 +35,8 @@ public class Dashboard extends Fragment {
     List<Chore> chores;
     List<Chore> myChores;
     List<String> choreList;
-    List<String> myChoreList;
     MyAdapter adapter;
-    MyAdapter myAdapter;
+    My2ndAdapter myAdapter;
     String fid;
     String uid;
 
@@ -69,7 +68,7 @@ public class Dashboard extends Fragment {
         myChores = new ArrayList<>();
 
         adapter = new MyAdapter(getContext(), chores);
-        myAdapter = new MyAdapter(getContext(), myChores);
+        myAdapter = new My2ndAdapter(getContext(), myChores);
 
         recyclerView.setAdapter(adapter);
         myRecyclerView.setAdapter(myAdapter);
@@ -79,7 +78,6 @@ public class Dashboard extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 dialog.show();
                 choreList = snapshot.getValue(User.class).getChores();
-                myChoreList = snapshot.getValue(User.class).getMyChores();
                 dialog.dismiss();
             }
 
@@ -97,11 +95,12 @@ public class Dashboard extends Fragment {
                 myChores.clear();
                 for (DataSnapshot itemSnapshot : snapshot.getChildren()) {
                     Chore chore = itemSnapshot.getValue(Chore.class);
+
                     if (choreList.contains(chore.getCid()) & chore.getStatus().equals("a")) {
                         chore.setKey(itemSnapshot.getKey());
                         chores.add(chore);
                     }
-                    if (myChoreList.contains(chore.getCid())& chore.getStatus().equals("a")) {
+                    if (chore.getCreator().equals(uid) & chore.getStatus().equals("a")) {
                         chore.setKey(itemSnapshot.getKey());
                         myChores.add(chore);
                     }

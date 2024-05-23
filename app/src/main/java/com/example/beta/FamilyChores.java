@@ -31,7 +31,7 @@ public class FamilyChores extends Fragment {
     ValueEventListener eventListener;
     List<Chore> chores;
     RecyclerView recyclerView;
-    MyAdapter adapter;
+    My2ndAdapter adapter;
     String fid;
 
 
@@ -57,7 +57,7 @@ public class FamilyChores extends Fragment {
 
         chores = new ArrayList<>();
 
-        adapter = new MyAdapter(getContext(), chores);
+        adapter = new My2ndAdapter(getContext(), chores);
 
         recyclerView.setAdapter(adapter);
 
@@ -68,6 +68,7 @@ public class FamilyChores extends Fragment {
                 for (DataSnapshot choreSnapshot : snapshot.getChildren()) {
                     Chore chore = choreSnapshot.getValue(Chore.class);
                     if (chore.getStatus().equals("a")){
+                        chore.setKey(choreSnapshot.getKey());
                         chores.add(chore);
                     }
                 }

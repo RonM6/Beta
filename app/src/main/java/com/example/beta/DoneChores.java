@@ -2,6 +2,7 @@ package com.example.beta;
 
 
 
+import static com.example.beta.DBref.mAuth;
 import static com.example.beta.DBref.refChores;
 import static com.example.beta.DBref.refDChores;
 
@@ -40,7 +41,7 @@ public class DoneChores extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_family_chores, container, false);
+        View view = inflater.inflate(R.layout.activity_done_chores, container, false);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setCancelable(false);
@@ -68,7 +69,8 @@ public class DoneChores extends Fragment {
                 chores.clear();
                 for (DataSnapshot choreSnapshot : snapshot.getChildren()) {
                     Chore chore = choreSnapshot.getValue(Chore.class);
-                    if(chore.getStatus().equals("d")){
+                    if(chore.getStatus().equals("d") & chore.getCreator().equals(mAuth.getUid())){
+                        chore.setKey(choreSnapshot.getKey());
                         chores.add(chore);
                     }
                 }

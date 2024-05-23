@@ -71,8 +71,7 @@ public class LogIn extends AppCompatActivity {
                                             editor.putString("fid", user.getFamily());
                                             editor.commit();
                                             DBref.fid = user.getFamily();
-                                            Intent intent = new Intent(LogIn.this, Dashboard.class)
-                                                    .putExtra("fName", user.getFamily());
+                                            Intent intent = new Intent(LogIn.this, MainActivity.class);
                                             startActivity(intent);
                                             finish();
                                         }

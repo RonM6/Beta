@@ -44,6 +44,7 @@ public class SignUp extends AppCompatActivity {
         if (currentUser != null & fid != "-1"){
             DBref.fid = fid;
             startActivity(new Intent(SignUp.this, MainActivity.class));
+            finish();
         }
     }
 

@@ -12,18 +12,26 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import java.io.File;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -31,20 +39,20 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.graphics.BitmapFactory;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -68,17 +76,28 @@ public class UploadActivity extends AppCompatActivity {
     String imageURL;
     Uri uri;
     String fid;
-    int minute, hour;
+    int minute, hour = 0;
     LocalDate date = LocalDate.now();
     DayOfWeek day;
     String sdate;
     Button timePick;
+    private AlertDialog.Builder alertDialog;
+    private String currentPath;
+    private static final int REQUEST_CAMERA_PERMISSION = 1;
+    private static final int REQUEST_IMAGE_CAPTURE = 2;
+    private static final int REQUEST_READ_EXTERNAL_STORAGE_PERMISSION = 3;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+        }
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ_EXTERNAL_STORAGE_PERMISSION);
+        }
 
 
 
@@ -159,9 +178,40 @@ public class UploadActivity extends AppCompatActivity {
         uploadImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent photoPicker = new Intent(Intent.ACTION_PICK);
-                photoPicker.setType("image/*");
-                activityResultLauncher.launch(photoPicker);
+                alertDialog = new AlertDialog.Builder(UploadActivity.this);
+                alertDialog.setMessage("Are you sure you want to logout?");
+                alertDialog.setPositiveButton("Camera", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String filename = "tempfile";
+                        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                        try {
+                            File imgFile = File.createTempFile(filename,".jpg",storageDir);
+                            currentPath = imgFile.getAbsolutePath();
+                            uri = FileProvider.getUriForFile(UploadActivity.this,"com.example.beta.fileprovider",imgFile);
+                            Intent takePicIntent = new Intent();
+                            takePicIntent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+                            takePicIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,uri);
+                            if (takePicIntent.resolveActivity(getPackageManager()) != null) {
+                                Toast.makeText(UploadActivity.this," create temporary file",Toast.LENGTH_LONG);
+                                startActivityForResult(takePicIntent, REQUEST_IMAGE_CAPTURE );
+                            }
+                        } catch (IOException e) {
+                            Toast.makeText(UploadActivity.this,"Failed to create temporary file",Toast.LENGTH_LONG);
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+                alertDialog.setNegativeButton("Gallery", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Intent photoPicker = new Intent(Intent.ACTION_PICK);
+                        photoPicker.setType("image/*");
+                        activityResultLauncher.launch(photoPicker);
+                    }
+                });
+                AlertDialog ad = alertDialog.create();
+                ad.show();
             }
         });
 
@@ -175,18 +225,57 @@ public class UploadActivity extends AppCompatActivity {
 
     public void addChoreToUser(String uid){
         userList.add(uid);
-        if (userList.contains(uid)){
-            Toast.makeText(this, "Added ", Toast.LENGTH_SHORT).show();
-        }
     }
     public void removeChoreToUser(String uid){
         userList.remove(uid);
-        if (!userList.contains(uid)){
-            Toast.makeText(this, "Removed ", Toast.LENGTH_SHORT).show();
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CAMERA_PERMISSION) {
+            if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
+            }
         }
+        if (requestCode == REQUEST_READ_EXTERNAL_STORAGE_PERMISSION) {
+            if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                Toast.makeText(this, "Gallery permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data_back) {
+        super.onActivityResult(requestCode, resultCode, data_back);
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            Bitmap imageBitmap = BitmapFactory.decodeFile(currentPath);
+            uploadImage.setImageBitmap(imageBitmap);
+        }
+
     }
 
     public void saveData(){
+        String title = uploadTopic.getText().toString();
+        String desc = uploadDesc.getText().toString();
+        if (title.isEmpty()){
+            Toast.makeText(this, "Enter Title", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (uri == null){
+            Toast.makeText(this, "Upload Image or choose from provided", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (sdate == null){
+            Toast.makeText(this, "Select Due Date", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (timePick.getText().toString().equals("Pick Due")){
+            Toast.makeText(this, "Select Due Time", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (userList.isEmpty()){
+            Toast.makeText(this, "Add Users", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         StorageReference storageReference = FirebaseStorage.getInstance("gs://beta-52e80.appspot.com").getReference().child("Android Images")
                 .child(uri.getLastPathSegment());
@@ -220,10 +309,14 @@ public class UploadActivity extends AppCompatActivity {
 
         String title = uploadTopic.getText().toString();
         String desc = uploadDesc.getText().toString();
+
+
+
         String creator = mAuth.getUid();
         String cid = String.valueOf(System.currentTimeMillis());
-
         Chore chore = new Chore(title, desc, imageURL, creator, "a", cid);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
+        sdate = date.format(formatter);
         chore.setDueDate(sdate);
         chore.setDueTime(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
         chore.setStatus("a");
@@ -245,10 +338,6 @@ public class UploadActivity extends AppCompatActivity {
                             refUsers.child(user.getUid()).setValue(user);
                             userList.remove(user.getUid());
                         }
-                        if (user.getUid().toString().equals(mAuth.getUid().toString())){
-                            user.addMyChore(cid);
-                            refUsers.child(user.getUid()).setValue(user);
-                        }
                     }
                 }
             }
@@ -261,7 +350,7 @@ public class UploadActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()){
                             Toast.makeText(UploadActivity.this, "Saved", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getApplicationContext(), Dashboard.class));
+                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
                             finish();
                         }
                     }
@@ -321,7 +410,7 @@ public class UploadActivity extends AppCompatActivity {
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                 hour = selectedHour;
                 minute = selectedMinute;
-                timePick.setText(timePick.getText().toString()+" "+String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
+                timePick.setText(sdate+" "+day+" "+String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
             }
         };
 
@@ -344,7 +433,6 @@ public class UploadActivity extends AppCompatActivity {
                 day = date.getDayOfWeek();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy");
                 sdate = date.format(formatter);
-                timePick.setText(sdate+" "+day);
 
                 timePick();
             }
