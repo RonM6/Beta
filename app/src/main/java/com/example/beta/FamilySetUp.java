@@ -20,16 +20,16 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class Welcome extends AppCompatActivity {
+public class FamilySetUp extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     @Override
@@ -44,22 +44,13 @@ public class Welcome extends AppCompatActivity {
             return insets;
         });
     }
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        if (currentUser != null){
-//            startActivity(new Intent(Welcome.this, Dashboard.class));
-//
-//        }
-//    }
 
     public void createFamily(View view) {
         EditText editText = findViewById(R.id.edittext_fid);
         String fName = editText.getText().toString();
 
         if(TextUtils.isEmpty(fName)){
-            Toast.makeText(Welcome.this, "Name is empty",Toast.LENGTH_SHORT).show();
+            Toast.makeText(FamilySetUp.this, "Name is empty",Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -87,18 +78,18 @@ public class Welcome extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()){
-                            Toast.makeText(Welcome.this, "Saved", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(FamilySetUp.this, "Saved", Toast.LENGTH_SHORT).show();
                             finish();
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(Welcome.this, e.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(FamilySetUp.this, e.getMessage().toString(), Toast.LENGTH_SHORT).show();
                         return;
                     }
                 });
-        Intent intent = new Intent(Welcome.this, Dashboard.class)
+        Intent intent = new Intent(FamilySetUp.this, MainActivity.class)
                 .putExtra("fid", family.getFid());
         startActivity(intent);
         finish();
@@ -108,7 +99,7 @@ public class Welcome extends AppCompatActivity {
         EditText editText = findViewById(R.id.edittext_fid);
         String fid = editText.getText().toString();
         if(TextUtils.isEmpty(fid)){
-            Toast.makeText(Welcome.this, "Family ID is empty",Toast.LENGTH_SHORT).show();
+            Toast.makeText(FamilySetUp.this, "Family ID is empty",Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -121,12 +112,51 @@ public class Welcome extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(!snapshot.exists()){
-                    Toast.makeText(Welcome.this, "Family ID incorrect",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(FamilySetUp.this, "Family ID incorrect",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 Family family = snapshot.getValue(Family.class);
                 family.addUser(uid);
-                refFamilies.child(fid).setValue(family);
+                refFamilies.child(fid).setValue(family).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        // Assuming you have a DatabaseReference object for the user's data
+                        DatabaseReference currentUserRef = refUsers.child(uid);
+
+                        currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                // Check if the snapshot exists
+                                if (dataSnapshot.exists()) {
+                                    // Get the user object
+                                    User user = dataSnapshot.getValue(User.class);
+                                    // Access the User fields
+                                    user.setFamily(fid);
+                                    refUsers.child(uid).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            SharedPreferences temp = getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
+                                            SharedPreferences.Editor editor=temp.edit();
+                                            editor.putString("fid", fid);
+                                            editor.commit();
+                                            DBref.fid = user.getFamily();
+
+                                            Intent intent = new Intent(FamilySetUp.this, MainActivity.class)
+                                                    .putExtra("fName", fid);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    });
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                // Handle potential errors here
+                            }
+                        });
+                    }
+                });
             }
 
             @Override
@@ -134,44 +164,5 @@ public class Welcome extends AppCompatActivity {
 
             }
         });
-
-
-        // Assuming you have a DatabaseReference object for the user's data
-        DatabaseReference currentUserRef = refUsers.child(uid);
-
-        currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // Check if the snapshot exists
-                if (dataSnapshot.exists()) {
-                    // Get the user object
-                    User user = dataSnapshot.getValue(User.class);
-                    // Access the User fields
-                    user.setFamily(fid);
-                    refUsers.child(uid).setValue(user);
-
-                    SharedPreferences temp = getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
-                    SharedPreferences.Editor editor=temp.edit();
-                    editor.putString("fid", fid);
-                    editor.commit();
-                    DBref.fid = user.getFamily();
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle potential errors here
-            }
-
-        });
-
-
-
-
-        Intent intent = new Intent(Welcome.this, Dashboard.class)
-                .putExtra("fName", fid);
-        startActivity(intent);
-        finish();
     }
 }

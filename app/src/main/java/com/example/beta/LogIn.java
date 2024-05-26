@@ -74,6 +74,10 @@ public class LogIn extends AppCompatActivity {
                                             Intent intent = new Intent(LogIn.this, MainActivity.class);
                                             startActivity(intent);
                                             finish();
+                                        }else {
+                                            Intent intent = new Intent(LogIn.this, FamilySetUp.class);
+                                            startActivity(intent);
+                                            finish();
                                         }
                                     }
                                 }

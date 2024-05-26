@@ -16,14 +16,15 @@ public class AlarmReceiver extends BroadcastReceiver {
     private static final int NOTIFICATION_ID = 1;
     @Override
     public void onReceive(Context context, Intent intent) {
-        String choreId = intent.getStringExtra("choreId");
         String choreTitle = intent.getStringExtra("title");
+        String choreDetails = intent.getStringExtra("detail");
         Toast.makeText(context, choreTitle + " is due in an hour!", Toast.LENGTH_SHORT).show();
         // Handle the alarm event here (e.g., show notification)
-        String text = choreTitle + " is due in an hour!";
-        showNotification(context, text);
+        String title = choreTitle + " is due in an hour!";
+        String detail = choreDetails;
+        showNotification(context,title, detail);
     }
-    public static void showNotification(Context context, String text) {
+    public static void showNotification(Context context, String title, String detail) {
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -36,8 +37,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         NotificationCompat.Builder notiBbuilder = new
                 NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(android.R.drawable.sym_def_app_icon)
-                .setContentTitle("This is your reminder!")
-                .setContentText(text)
+                .setContentTitle(title)
+                .setContentText(detail)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
         notificationManager.notify(NOTIFICATION_ID, notiBbuilder.build());
     }

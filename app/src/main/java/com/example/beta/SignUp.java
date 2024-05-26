@@ -38,12 +38,15 @@ public class SignUp extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        SharedPreferences settings = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
-        String fid = settings.getString("fid", "-1");
+        SharedPreferences sp = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
+        String fid = sp.getString("fid", "-1");
 
-        if (currentUser != null & fid != "-1"){
+        if (currentUser != null && !fid.equals("-1")){
             DBref.fid = fid;
             startActivity(new Intent(SignUp.this, MainActivity.class));
+            finish();
+        } else if (currentUser != null) {
+            startActivity(new Intent(SignUp.this, FamilySetUp.class));
             finish();
         }
     }
@@ -83,7 +86,7 @@ public class SignUp extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
                                                 // Family node updated successfully
-                                                Intent intent = new Intent(SignUp.this, Welcome.class)
+                                                Intent intent = new Intent(SignUp.this, FamilySetUp.class)
                                                         .putExtra("name", name);
                                                 startActivity(intent);
                                                 finish();
@@ -92,13 +95,9 @@ public class SignUp extends AppCompatActivity {
                                             }
                                         }
                                     });
-//                            Family family = new Family(fName);
-//                            family.addUser(uid);
-//                            FirebaseDatabase.getInstance("https://beta-52e80-default-rtdb.europe-west1.firebasedatabase.app").getReference("Families")
-//                                    .child(fName).setValue(family);
 
                         } else {
-                            Toast.makeText(SignUp.this, "register failed", Toast.LENGTH_LONG).show();
+                            Toast.makeText(SignUp.this, "registration failed", Toast.LENGTH_LONG).show();
 
                         }
                     }

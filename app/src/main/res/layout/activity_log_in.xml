@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:backgroundTint="@color/background_color"
     tools:context=".LogIn">
 
     <TextView
@@ -15,6 +16,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="ChoreBuddy"
+        android:textColor="@color/text_color"
         android:textSize="34sp" />
 
     <EditText
@@ -23,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ems="10"
+        android:textColor="@color/text_color"
         android:gravity="center"
         android:hint="email"
         android:inputType="textEmailAddress" />
@@ -35,6 +38,7 @@
         android:ems="10"
         android:gravity="center"
         android:hint="password"
+        android:textColor="@color/text_color"
         android:inputType="textPassword" />
 
     <Space
@@ -48,6 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="1"
+        android:backgroundTint="@color/secondary_color"
         android:onClick="login"
         android:text="Log In"
         app:cornerRadius="80dp"/>

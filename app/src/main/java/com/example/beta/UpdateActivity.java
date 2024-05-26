@@ -42,8 +42,8 @@ public class UpdateActivity extends AppCompatActivity {
     DatabaseReference databaseReference;
     StorageReference storageReference;
 
-    SharedPreferences settings = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
-    String fid = settings.getString("fid", "-1");
+    SharedPreferences sp = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
+    String fid = sp.getString("fid", "-1");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

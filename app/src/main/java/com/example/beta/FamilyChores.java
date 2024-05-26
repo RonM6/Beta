@@ -47,8 +47,8 @@ public class FamilyChores extends Fragment {
         AlertDialog dialog = builder.create();
         dialog.show();
 
-        SharedPreferences settings = requireActivity().getSharedPreferences("PREFS_NAME", 0);
-        fid = settings.getString("fid", "-1");
+        SharedPreferences sp = requireActivity().getSharedPreferences("PREFS_NAME", 0);
+        fid = sp.getString("fid", "-1");
 
         recyclerView = view.findViewById(R.id.recyclerView);
 
@@ -68,7 +68,6 @@ public class FamilyChores extends Fragment {
                 for (DataSnapshot choreSnapshot : snapshot.getChildren()) {
                     Chore chore = choreSnapshot.getValue(Chore.class);
                     if (chore.getStatus().equals("a")){
-                        chore.setKey(choreSnapshot.getKey());
                         chores.add(chore);
                     }
                 }

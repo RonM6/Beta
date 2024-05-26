@@ -19,8 +19,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class AlarmHelper {
-    public static void setAlarm(Context context, String choreId, String dueDate, String dueTime, String title) {
-//        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+    public static void setAlarm(Context context, String choreId, String dueDate, String dueTime, String title, String detail) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyy");
         LocalDate parsedDate = LocalDate.parse(dueDate, formatter);
         DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("HH:mm");
@@ -29,35 +28,13 @@ public class AlarmHelper {
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra("choreId", choreId);
         intent.putExtra("title", title);
+        intent.putExtra("detail", detail);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context,
                 choreId.hashCode(), intent, PendingIntent.FLAG_IMMUTABLE);
         AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         long alarmTimeMillis = localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
 //             Set the alarm
         alarmMgr.set(AlarmManager.RTC_WAKEUP, alarmTimeMillis, alarmIntent);
-//        // Combine due date and time into a single Date object
-//        SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy HH:mm");
-//        Date dueDateTime = null;
-//        try {
-//            dueDateTime = sdf.parse(dueDate + " " + dueTime);
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//            return;
-//        }
-//
-//        // Set the alarm for 1 hour before the due time
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTime(dueDateTime);
-//        calendar.add(Calendar.HOUR, -1);
-//
-//        Intent intent = new Intent(context, AlarmReceiver.class);
-//        intent.putExtra("choreId", choreId);
-//
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, choreId.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-//
-//        if (alarmManager != null) {
-//            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-//        }
     }
 
     public static void cancelAlarm(Context context, String choreId) {

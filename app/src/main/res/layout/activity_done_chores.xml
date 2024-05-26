@@ -6,29 +6,51 @@
     android:layout_height="match_parent"
     tools:context=".DoneChores">
   <LinearLayout
-      android:id="@+id/main"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textView3"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="46dp"
-        android:text="Done Chores:"
-        android:textAlignment="textStart"
-        android:textSize="24sp" />
+        android:layout_height="match_parent"
+        android:layout_weight="1">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv"
-        android:layout_weight="1"
-        android:scrollbars="vertical" />
+
+      <TextView
+          android:id="@+id/tv"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="12dp"
+          android:layout_marginTop="20dp"
+          android:layout_marginEnd="46dp"
+          android:layout_marginBottom="-48dp"
+          android:focusable="false"
+          android:text="Done Chores"
+          android:textColor="@color/secondary_color"
+          android:textSize="24sp" />
+      <TextView
+          android:id="@+id/tv2"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/tv"
+          android:layout_marginStart="14dp"
+          android:layout_marginTop="40dp"
+          android:layout_marginEnd="46dp"
+          android:layout_marginBottom="-48dp"
+          android:focusable="false"
+          android:text="You've Assigned"
+          android:textColor="@color/secondary_color"
+          android:textSize="18sp" />
+
+      <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/recyclerView"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/tv2"
+          android:layout_marginTop="52dp"
+          android:scrollbars="vertical" />
+
+    </RelativeLayout>
 
   </LinearLayout>
 </FrameLayout>

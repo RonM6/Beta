@@ -25,6 +25,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -56,13 +59,36 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
         Chore currentChore = dataList.get(holder.getAdapterPosition());
 
-        if(currentChore.getStatus().equals("a")) {
-            if (!AlarmHelper.isAlarmSet(context, currentChore.getCid())) {
-                AlarmHelper.setAlarm(context, currentChore.getCid(), currentChore.getDueDate(), currentChore.getDueTime(), currentChore.getTitle());
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyy HH:mm");
+
+        try {
+            // Combine the due date and time into a single string
+            String dueDateTimeString = currentChore.getDueDate() + " " + currentChore.getDueTime();
+            // Parse the combined string into a Date object
+            Date dueDateTime = dateFormat.parse(dueDateTimeString);
+            // Get the current date and time
+            Date currentDateTime = new Date();
+
+            // Compare current date and time with the due date and time
+            if (currentDateTime.after(dueDateTime)) {
+                // Due date and time are in the past
+                cancelAlarm(context, currentChore.getCid());
+            } else {
+                // Due date and time are in the future
+                if (currentChore.getStatus().equals("a")) {
+                    if (!AlarmHelper.isAlarmSet(context, currentChore.getCid())) {
+                        AlarmHelper.setAlarm(context, currentChore.getCid(), currentChore.getDueDate(), currentChore.getDueTime(), currentChore.getTitle(), currentChore.getDescription());
+                    }
+                } else if (currentChore.getStatus().equals("d")) {
+                    cancelAlarm(context, currentChore.getCid());
+                }
             }
-        }else if(currentChore.getStatus().equals("d")) {
-            cancelAlarm(context, currentChore.getCid());
+        } catch (ParseException e) {
+            e.printStackTrace();
+            // Handle the parsing error, perhaps with a log message or default behavior
         }
+
 
         holder.recCard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +97,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
                 intent.putExtra("Image", currentChore.getDataImage());
                 intent.putExtra("Description", currentChore.getDescription());
                 intent.putExtra("Title", currentChore.getTitle());
-                intent.putExtra("Key", currentChore.getKey());
+                intent.putExtra("cid", currentChore.getCid());
                 intent.putExtra("dueTime", currentChore.getDueTime());
                 intent.putExtra("dueDate", currentChore.getDueDate());
                 intent.putExtra("status", currentChore.getStatus().toString());
@@ -83,7 +109,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
             @Override
             public void onClick(View view) {
                 DatabaseReference reference = refChores.child(DBref.fid);
-                reference.child(currentChore.getKey()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                reference.child(currentChore.getCid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
                         if (task.isSuccessful()){
@@ -98,7 +124,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
                                         StstorageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {
-                                                reference.child(currentChore.getKey()).removeValue();
+                                                reference.child(currentChore.getCid()).removeValue();
                                                 refUsers.child(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                     @Override
                                                     public void onSuccess(DataSnapshot dataSnapshot) {
@@ -120,7 +146,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
                                         cancelAlarm(context, chore.getCid());
                                         chore.setWhoEnded(mAuth.getUid());
                                         chore.setStatus("d");
-                                        reference.child(currentChore.getKey()).setValue(chore).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        reference.child(currentChore.getCid()).setValue(chore).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {
                                                 refUsers.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
@@ -145,7 +171,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
                                     }
                                 }
                             } else {
-                                Log.e("MyAdapter", "Snapshot does not exist for key: " + currentChore.getKey());
+                                Log.e("MyAdapter", "Snapshot does not exist for key: " + currentChore.getCid());
                             }
                         } else {
                             Log.e("MyAdapter", "Failed to get chore: ", task.getException());

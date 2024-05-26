@@ -29,16 +29,6 @@
             android:enabled="true"
             android:exported="true"/>
 
-        <!-- BootReceiver Declaration -->
-        <receiver android:name=".BootReceiver"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.REBOOT" />
-            </intent-filter>
-        </receiver>
 
         <activity
             android:name=".DoneChores"
@@ -68,7 +58,7 @@
             android:name=".Dashboard"
             android:exported="true" />
         <activity
-            android:name=".Welcome"
+            android:name=".FamilySetUp"
             android:exported="true" />
         <activity
             android:name=".SignUp"

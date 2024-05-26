@@ -101,8 +101,8 @@ public class UploadActivity extends AppCompatActivity {
 
 
 
-        SharedPreferences settings = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
-        fid = settings.getString("fid", "-1");
+        SharedPreferences sp = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
+        fid = sp.getString("fid", "-1");
         recyclerView = findViewById(R.id.recyclerView1);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(UploadActivity.this, 1);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -179,7 +179,7 @@ public class UploadActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 alertDialog = new AlertDialog.Builder(UploadActivity.this);
-                alertDialog.setMessage("Are you sure you want to logout?");
+                alertDialog.setMessage("Take a picture or upload from gallery");
                 alertDialog.setPositiveButton("Camera", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -255,7 +255,6 @@ public class UploadActivity extends AppCompatActivity {
 
     public void saveData(){
         String title = uploadTopic.getText().toString();
-        String desc = uploadDesc.getText().toString();
         if (title.isEmpty()){
             Toast.makeText(this, "Enter Title", Toast.LENGTH_SHORT).show();
             return;
@@ -321,10 +320,6 @@ public class UploadActivity extends AppCompatActivity {
         chore.setDueTime(String.format(Locale.getDefault(), "%02d:%02d", hour, minute));
         chore.setStatus("a");
 
-        //We are changing the child from title to currentDate,
-        // because we will be updating title as well and it may affect child value.
-
-        String currentDate = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
 
         refUsers.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
@@ -344,8 +339,7 @@ public class UploadActivity extends AppCompatActivity {
 
         });
 
-        refChores.child(fid).child(currentDate)
-                .setValue(chore).addOnCompleteListener(new OnCompleteListener<Void>() {
+        refChores.child(fid).child(cid).setValue(chore).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()){

@@ -19,18 +19,10 @@ public class User {
     }
 
     public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getUName() {
         return this.name;
     }
 
-    public void setUName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 

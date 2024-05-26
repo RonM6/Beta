@@ -81,17 +81,12 @@ public class MainActivity extends AppCompatActivity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                 if (alarmManager != null && !alarmManager.canScheduleExactAlarms()) {
-                    // Permission not granted, handle accordingly
+                    Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
                 }
             }
         }
     }
 
-
-    public void onTaskComplete() {
-        // Navigate to the home fragment or perform any other action here
-        replaceFragment(new Dashboard()); // Replace HomeFragment with your actual home fragment class
-    }
 
     private void replaceFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();

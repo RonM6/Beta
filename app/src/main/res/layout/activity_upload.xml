@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal"
-        android:background="@drawable/lavender_border"
+        android:backgroundTint="@color/background_color"
+        android:background="@drawable/view_border"
         android:orientation="vertical"
         android:padding="20dp">
 
@@ -21,13 +22,13 @@
             android:layout_height="wrap_content"
             android:text="Create Chore"
             android:textAlignment="center"
-            android:textColor="@color/lavender"
+            android:textColor="@color/text_color"
             android:textSize="34sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="80dp"
-            android:background="@drawable/lavender_border"
+            android:background="@drawable/view_border"
             android:orientation="horizontal">
 
             <ImageView
@@ -38,6 +39,7 @@
                 android:layout_marginBottom="5dp"
                 android:layout_weight="1"
                 android:onClick="dishes"
+                android:foreground="@drawable/view_border"
                 android:src="@drawable/washing_dishes" />
 
             <ImageView
@@ -49,6 +51,7 @@
                 android:layout_weight="1"
                 android:onClick="laundry"
                 android:scaleType="fitCenter"
+                android:foreground="@drawable/view_border"
                 android:src="@drawable/laundry_machine" />
 
             <ImageView
@@ -60,6 +63,7 @@
                 android:layout_weight="1"
                 android:onClick="vacuum"
                 android:scaleType="fitCenter"
+                android:foreground="@drawable/view_border"
                 android:src="@drawable/vacuum" />
 
             <ImageView
@@ -71,6 +75,7 @@
                 android:layout_weight="1"
                 android:onClick="trash"
                 android:scaleType="fitCenter"
+                android:foreground="@drawable/view_border"
                 android:src="@drawable/trash" />
 
             <ImageView
@@ -81,6 +86,7 @@
                 android:layout_marginBottom="5dp"
                 android:layout_weight="1"
                 android:scaleType="fitCenter"
+                android:foreground="@drawable/view_border"
                 android:src="@drawable/ic_baseline_add_24" />
 
         </LinearLayout>
@@ -90,22 +96,22 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/lavender_border"
+            android:background="@drawable/view_border"
             android:gravity="start|center_vertical"
             android:hint="Chore Title"
             android:padding="16dp"
-            android:textColor="@color/lavender" />
+            android:textColor="@color/primary" />
 
         <EditText
             android:id="@+id/uploadDesc"
             android:layout_width="match_parent"
             android:layout_height="111dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/lavender_border"
+            android:background="@drawable/view_border"
             android:gravity="start|center_vertical"
             android:hint="Description"
             android:padding="16dp"
-            android:textColor="@color/lavender" />
+            android:textColor="@color/primary" />
 
         <Space
             android:layout_width="match_parent"
@@ -116,6 +122,8 @@
             android:layout_width="match_parent"
             android:layout_height="75dp"
             android:onClick="showDatePicker"
+            android:backgroundTint="@color/secondary_color"
+            android:foreground="@drawable/view_border"
             android:text="Pick Due"
             app:cornerRadius="35dp" />
 
@@ -124,7 +132,7 @@
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/lavender_border"
+            android:background="@drawable/view_border"
             android:scrollbars="vertical" />
 
         <Button
@@ -132,8 +140,9 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/lavender_border"
+            android:foreground="@drawable/view_border"
             android:text="Save"
+            android:backgroundTint="@color/primary"
             android:textSize="18sp"
             app:cornerRadius="20dp" />
 

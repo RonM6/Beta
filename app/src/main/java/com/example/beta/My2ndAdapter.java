@@ -62,7 +62,7 @@ public class My2ndAdapter extends RecyclerView.Adapter<My2ndViewHolder> {
                 intent.putExtra("Image", currentChore.getDataImage());
                 intent.putExtra("Description", currentChore.getDescription());
                 intent.putExtra("Title", currentChore.getTitle());
-                intent.putExtra("Key", currentChore.getKey());
+                intent.putExtra("cid", currentChore.getCid());
                 intent.putExtra("dueTime", currentChore.getDueTime());
                 intent.putExtra("dueDate", currentChore.getDueDate());
                 intent.putExtra("status", currentChore.getStatus().toString());
@@ -74,7 +74,7 @@ public class My2ndAdapter extends RecyclerView.Adapter<My2ndViewHolder> {
             @Override
             public void onClick(View view) {
                 DatabaseReference reference = refChores.child(DBref.fid);
-                reference.child(currentChore.getKey()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                reference.child(currentChore.getCid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
                         if (task.isSuccessful()){
@@ -89,7 +89,7 @@ public class My2ndAdapter extends RecyclerView.Adapter<My2ndViewHolder> {
                                         StstorageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {
-                                                reference.child(currentChore.getKey()).removeValue();
+                                                reference.child(currentChore.getCid()).removeValue();
                                                 refUsers.child(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                                                     @Override
                                                     public void onSuccess(DataSnapshot dataSnapshot) {
@@ -110,7 +110,7 @@ public class My2ndAdapter extends RecyclerView.Adapter<My2ndViewHolder> {
                                     if(chore.getStatus().equals("a")){
                                         chore.setWhoEnded(mAuth.getUid());
                                         chore.setStatus("d");
-                                        reference.child(currentChore.getKey()).setValue(chore).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        reference.child(currentChore.getCid()).setValue(chore).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {
                                                 refUsers.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
@@ -135,7 +135,7 @@ public class My2ndAdapter extends RecyclerView.Adapter<My2ndViewHolder> {
                                     }
                                 }
                             } else {
-                                Log.e("MyAdapter", "Snapshot does not exist for key: " + currentChore.getKey());
+                                Log.e("MyAdapter", "Snapshot does not exist for key: " + currentChore.getCid());
                             }
                         } else {
                             Log.e("MyAdapter", "Failed to get chore: ", task.getException());

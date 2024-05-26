@@ -1,7 +1,6 @@
 package com.example.beta;
 
 public class Chore {
-    private String key;
     private String cid;
     private String title;
     private String description;
@@ -47,14 +46,6 @@ public class Chore {
 
     public void setCid(String cid) {
         this.cid = cid;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
     }
 
     public String getTitle() {

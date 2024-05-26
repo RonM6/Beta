@@ -20,6 +20,7 @@
             android:layout_marginEnd="46dp"
             android:text="Family Chores:"
             android:textAlignment="textStart"
+            android:textColor="@color/accent_color"
             android:textSize="24sp" />
 
         <androidx.recyclerview.widget.RecyclerView

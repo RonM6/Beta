@@ -45,8 +45,8 @@ public class Dashboard extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_dashboard, container, false);
 
-        SharedPreferences settings = requireActivity().getSharedPreferences("PREFS_NAME", 0);
-        fid = settings.getString("fid", "-1");
+        SharedPreferences sp = requireActivity().getSharedPreferences("PREFS_NAME", 0);
+        fid = sp.getString("fid", "-1");
         uid = mAuth.getUid();
 
         recyclerView = view.findViewById(R.id.recyclerView);
@@ -66,6 +66,7 @@ public class Dashboard extends Fragment {
 
         chores = new ArrayList<>();
         myChores = new ArrayList<>();
+        choreList = new ArrayList<>();
 
         adapter = new MyAdapter(getContext(), chores);
         myAdapter = new My2ndAdapter(getContext(), myChores);
@@ -96,12 +97,10 @@ public class Dashboard extends Fragment {
                 for (DataSnapshot itemSnapshot : snapshot.getChildren()) {
                     Chore chore = itemSnapshot.getValue(Chore.class);
 
-                    if (choreList.contains(chore.getCid()) & chore.getStatus().equals("a")) {
-                        chore.setKey(itemSnapshot.getKey());
+                    if (choreList.contains(chore.getCid()) && chore.getStatus().equals("a")) {
                         chores.add(chore);
                     }
-                    if (chore.getCreator().equals(uid) & chore.getStatus().equals("a")) {
-                        chore.setKey(itemSnapshot.getKey());
+                    if (chore.getCreator().equals(uid) && chore.getStatus().equals("a")) {
                         myChores.add(chore);
                     }
                 }

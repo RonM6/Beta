@@ -24,6 +24,7 @@
             android:layout_marginBottom="10dp"
             android:scaleType="centerCrop"
             android:src="@drawable/uploadimg"
+            android:foreground="@drawable/view_border"
             app:shapeAppearanceOverlay="@style/roundedImageViewRounded" />
 
         <TextView
@@ -31,10 +32,11 @@
             android:layout_width="160dp"
             android:layout_height="30dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_toEndOf="@id/recImage"
+            android:textColor="@color/accent_color"
             android:text="Title"
-            android:textSize="20sp" />
+            android:textSize="28sp" />
 
         <ImageView
             android:id="@+id/recCheck"
@@ -46,7 +48,8 @@
             android:layout_marginBottom="10dp"
             android:layout_weight="1"
             android:scaleType="fitCenter"
-            android:src="@drawable/baseline_check_circle_outline_24" />
+            android:src="@drawable/baseline_check_circle_outline_24"
+            app:tint="@color/secondary_color" />
 
         <TextView
             android:id="@+id/recDesc"
@@ -54,9 +57,11 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/recTitle"
             android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp"
             android:layout_marginBottom="12dp"
             android:layout_toEndOf="@id/recImage"
             android:maxLines="1"
+            android:textColor="@color/text_color"
             android:text="desc"
             android:textSize="14sp" />
 

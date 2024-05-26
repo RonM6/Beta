@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Welcome" >
+    tools:context=".FamilySetUp" >
 
     <TextView
         android:id="@+id/textView"
@@ -14,8 +14,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="Welcome"
-        android:textSize="24sp" />
+        android:text="Family Setup"
+        android:textColor="@color/text_color"
+        android:textSize="34sp" />
 
     <Space
         android:layout_width="match_parent"
@@ -29,7 +30,8 @@
         android:layout_weight="1"
         android:ems="10"
         android:gravity="center"
-        android:hint="FID/Family Name"
+        android:hint="Family Name / FID"
+        android:textColor="@color/text_color"
         android:inputType="textEmailAddress" />
 
     <Space
@@ -43,6 +45,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:onClick="createFamily"
+        android:backgroundTint="@color/secondary_color"
+        app:cornerRadius="80dp"
         android:text="Create Family" />
 
     <Button
@@ -51,6 +55,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:onClick="joinFamily"
+        android:backgroundTint="@color/accent_color"
+        app:cornerRadius="80dp"
         android:text="Join Family" />
 
     <Space

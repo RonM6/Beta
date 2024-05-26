@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/bottomAppBar"
         android:layout_gravity="bottom"
-        android:background="@color/white"
+        android:backgroundTint="@color/primary"
         app:fabCradleMargin="10dp"
         app:fabCradleRoundedCornerRadius="50dp">
 
@@ -28,6 +28,9 @@
             android:layout_marginEnd="20dp"
             app:labelVisibilityMode="labeled"
             android:background="@android:color/transparent"
+            app:itemTextColor="@color/accent_color"
+            app:itemIconTint="@color/accent_color"
+
             app:menu="@menu/bottom_menu"/>
 
     </com.google.android.material.bottomappbar.BottomAppBar>
@@ -40,6 +43,8 @@
         android:src="@drawable/ic_baseline_add_24"
         app:layout_anchor="@id/bottomAppBar"
         app:maxImageSize="40dp"
-        app:tint="@color/lavender" />
+        android:foreground="@drawable/view_border"
+
+        app:tint="@color/primary" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

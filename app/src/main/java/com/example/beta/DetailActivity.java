@@ -33,8 +33,8 @@ public class DetailActivity extends AppCompatActivity {
 
     TextView detailDesc, detailTitle, due;
     ImageView detailImage;
-    FloatingActionButton deleteButton, editButton;
-    String key = "";
+    FloatingActionButton deleteButton;
+    String cid = "";
     String imageUrl = "";
     String fid;
     String status;
@@ -43,8 +43,8 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        SharedPreferences settings = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
-        fid = settings.getString("fid", "-1");
+        SharedPreferences sp = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
+        fid = sp.getString("fid", "-1");
 
         detailDesc = findViewById(R.id.detailDesc);
         detailImage = findViewById(R.id.detailImage);
@@ -59,7 +59,7 @@ public class DetailActivity extends AppCompatActivity {
             String dueTime = bundle.getString("dueTime");
             String dueDate = bundle.getString("dueDate");
             status = bundle.getString("status");
-            key = bundle.getString("Key");
+            cid = bundle.getString("cid");
             imageUrl = bundle.getString("Image");
             Glide.with(this).load(bundle.getString("Image")).into(detailImage);
             String dueString = formatDueDate(dueDate, dueTime);
@@ -76,14 +76,14 @@ public class DetailActivity extends AppCompatActivity {
                     storageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
-                            reference.child(key).removeValue();
+                            reference.child(cid).removeValue();
                             Toast.makeText(DetailActivity.this, "Deleted", Toast.LENGTH_SHORT).show();
                             finish();
                         }
                     });
                 }
                 if (status.equals("a")) {
-                    reference.child(key).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    reference.child(cid).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DataSnapshot> task) {
                             if (task.isSuccessful()){
@@ -92,7 +92,7 @@ public class DetailActivity extends AppCompatActivity {
                                     Chore chore = snapshot.getValue(Chore.class);
                                     chore.setWhoEnded(mAuth.getUid());
                                     chore.setStatus("d");
-                                    reference.child(key).setValue(chore).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    reference.child(cid).setValue(chore).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void unused) {
                                             Toast.makeText(getApplicationContext(), "Chore completed", Toast.LENGTH_SHORT).show();
