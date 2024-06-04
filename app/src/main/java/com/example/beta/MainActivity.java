@@ -1,26 +1,20 @@
 package com.example.beta;
 
+import android.app.AlarmManager;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.provider.Settings;
+import android.view.View;
+import android.widget.Toast;
+
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.beta.R;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.app.AlarmManager;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.provider.Settings;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
-
-import com.example.beta.Dashboard;
-import com.example.beta.Stngs;
-import com.example.beta.UpdateActivity;
 import com.example.beta.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
@@ -65,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
     @RequiresApi(api = Build.VERSION_CODES.S)
     private void checkAndRequestExactAlarmPermission() {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -94,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
     }
-
 
 
     public void newChore(View view) {
