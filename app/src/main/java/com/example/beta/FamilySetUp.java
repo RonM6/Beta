@@ -49,8 +49,8 @@ public class FamilySetUp extends AppCompatActivity {
         EditText editText = findViewById(R.id.edittext_fid);
         String fName = editText.getText().toString();
 
-        if(TextUtils.isEmpty(fName)){
-            Toast.makeText(FamilySetUp.this, "Name is empty",Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(fName)) {
+            Toast.makeText(FamilySetUp.this, "Name is empty", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -59,7 +59,7 @@ public class FamilySetUp extends AppCompatActivity {
         String fid = uid.substring(0, 5);
         String name = null;
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null){
+        if (bundle != null) {
             name = bundle.getString("name");
         }
         User user = new User(uid, name, fid);
@@ -68,27 +68,27 @@ public class FamilySetUp extends AppCompatActivity {
 
         Family family = new Family(fName, fid);
         family.addUser(uid);
-        SharedPreferences temp = getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
-        SharedPreferences.Editor editor=temp.edit();
+        SharedPreferences temp = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
+        SharedPreferences.Editor editor = temp.edit();
         editor.putString("fid", fid);
         editor.commit();
 
 
         refFamilies.child(fid).setValue(family).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()){
-                            Toast.makeText(FamilySetUp.this, "Saved", Toast.LENGTH_SHORT).show();
-                            finish();
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(FamilySetUp.this, e.getMessage().toString(), Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                });
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(FamilySetUp.this, "Saved", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(FamilySetUp.this, e.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                return;
+            }
+        });
         Intent intent = new Intent(FamilySetUp.this, MainActivity.class)
                 .putExtra("fid", family.getFid());
         startActivity(intent);
@@ -98,8 +98,8 @@ public class FamilySetUp extends AppCompatActivity {
     public void joinFamily(View view) {
         EditText editText = findViewById(R.id.edittext_fid);
         String fid = editText.getText().toString();
-        if(TextUtils.isEmpty(fid)){
-            Toast.makeText(FamilySetUp.this, "Family ID is empty",Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(fid)) {
+            Toast.makeText(FamilySetUp.this, "Family ID is empty", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -111,8 +111,8 @@ public class FamilySetUp extends AppCompatActivity {
         currentFamilyRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(!snapshot.exists()){
-                    Toast.makeText(FamilySetUp.this, "Family ID incorrect",Toast.LENGTH_SHORT).show();
+                if (!snapshot.exists()) {
+                    Toast.makeText(FamilySetUp.this, "Family ID incorrect", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 Family family = snapshot.getValue(Family.class);
@@ -135,8 +135,8 @@ public class FamilySetUp extends AppCompatActivity {
                                     refUsers.child(uid).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void unused) {
-                                            SharedPreferences temp = getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
-                                            SharedPreferences.Editor editor=temp.edit();
+                                            SharedPreferences temp = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = temp.edit();
                                             editor.putString("fid", fid);
                                             editor.commit();
                                             DBref.fid = user.getFamily();

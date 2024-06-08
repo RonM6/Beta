@@ -1,13 +1,11 @@
 package com.example.beta;
 
-import static com.example.beta.DBref.refFamilies;
 import static com.example.beta.DBref.refUsers;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -20,7 +18,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class SignUp extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -34,6 +31,7 @@ public class SignUp extends AppCompatActivity {
 
 
     }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -41,7 +39,7 @@ public class SignUp extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
         String fid = sp.getString("fid", "-1");
 
-        if (currentUser != null && !fid.equals("-1")){
+        if (currentUser != null && !fid.equals("-1")) {
             DBref.fid = fid;
             startActivity(new Intent(SignUp.this, MainActivity.class));
             finish();
@@ -51,7 +49,7 @@ public class SignUp extends AppCompatActivity {
         }
     }
 
-    public void register(View view){
+    public void register(View view) {
         EditText emailEditText = findViewById(R.id.edittext_fid);
         EditText passwordEditText = findViewById(R.id.edittext_password);
         EditText nameEditText = findViewById(R.id.edittext_name);
@@ -59,16 +57,16 @@ public class SignUp extends AppCompatActivity {
         String password = String.valueOf(passwordEditText.getText());
         String name = String.valueOf(nameEditText.getText());
 
-        if(TextUtils.isEmpty(email)){
-            Toast.makeText(SignUp.this, "Email is empty",Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(email)) {
+            Toast.makeText(SignUp.this, "Email is empty", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(TextUtils.isEmpty(password)){
-            Toast.makeText(SignUp.this, "Password is empty",Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(password)) {
+            Toast.makeText(SignUp.this, "Password is empty", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(TextUtils.isEmpty(name)){
-            Toast.makeText(SignUp.this, "Name is empty",Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(name)) {
+            Toast.makeText(SignUp.this, "Name is empty", Toast.LENGTH_SHORT).show();
             return;
         }
         mAuth.createUserWithEmailAndPassword(
@@ -82,19 +80,19 @@ public class SignUp extends AppCompatActivity {
                             String uid = user.getUid();
                             User user1 = new User(uid, name, fName);
                             refUsers.child(uid).setValue(user1).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                // Family node updated successfully
-                                                Intent intent = new Intent(SignUp.this, FamilySetUp.class)
-                                                        .putExtra("name", name);
-                                                startActivity(intent);
-                                                finish();
-                                            } else {
-                                                Toast.makeText(SignUp.this, "Failed to create family", Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    });
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        // Family node updated successfully
+                                        Intent intent = new Intent(SignUp.this, FamilySetUp.class)
+                                                .putExtra("name", name);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+                                        Toast.makeText(SignUp.this, "Failed to create family", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
 
                         } else {
                             Toast.makeText(SignUp.this, "registration failed", Toast.LENGTH_LONG).show();
@@ -103,6 +101,7 @@ public class SignUp extends AppCompatActivity {
                     }
                 });
     }
+
     public void ahu(View view) {
         startActivity(new Intent(SignUp.this, LogIn.class));
     }

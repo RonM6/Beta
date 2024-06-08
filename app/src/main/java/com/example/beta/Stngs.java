@@ -43,13 +43,13 @@ public class Stngs extends Fragment {
                 alertDialog = new AlertDialog.Builder(getContext());
                 alertDialog.setTitle("Are you sure?");
                 alertDialog.setMessage("Do you really want to logout?");
-                alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+                alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         FirebaseAuth.getInstance().signOut();
                         SharedPreferences temp;
                         temp = requireActivity().getSharedPreferences("PREFS_NAME", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor=temp.edit();
+                        SharedPreferences.Editor editor = temp.edit();
                         editor.putString("fid", "-1");
                         editor.commit();
                         Intent intent = new Intent(getContext(), SignUp.class);
@@ -57,7 +57,7 @@ public class Stngs extends Fragment {
                         requireActivity().finish();
                     }
                 });
-                alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener(){
+                alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                     }
@@ -87,12 +87,12 @@ public class Stngs extends Fragment {
         refUsers.child(mAuth.getUid()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
+                if (dataSnapshot.exists()) {
                     User user = dataSnapshot.getValue(User.class);
-                    if(user != null){
+                    if (user != null) {
                         name = user.getName();
                         TextView textView2 = view.findViewById(R.id.textView2);
-                        textView2.setText("Hello there "+name+"!");
+                        textView2.setText("Hello there " + name + "!");
                     }
                 }
             }
@@ -102,8 +102,6 @@ public class Stngs extends Fragment {
 
 
         textView.setText(fid);
-
-
 
 
     }

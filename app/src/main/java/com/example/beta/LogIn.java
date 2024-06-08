@@ -1,6 +1,5 @@
 package com.example.beta;
 
-import static com.example.beta.DBref.refFamilies;
 import static com.example.beta.DBref.refUsers;
 
 import android.content.Intent;
@@ -40,12 +39,12 @@ public class LogIn extends AppCompatActivity {
         EditText passwordEditText = findViewById(R.id.edittext_password);
         String email = String.valueOf(emailEditText.getText());
         String password = String.valueOf(passwordEditText.getText());
-        if(TextUtils.isEmpty(email)){
-            Toast.makeText(LogIn.this, "Email is empty",Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(email)) {
+            Toast.makeText(LogIn.this, "Email is empty", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(TextUtils.isEmpty(password)){
-            Toast.makeText(LogIn.this, "Password is empty",Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(password)) {
+            Toast.makeText(LogIn.this, "Password is empty", Toast.LENGTH_SHORT).show();
             return;
         }
         mAuth.signInWithEmailAndPassword(emailEditText.getText().toString(), passwordEditText.getText().toString())
@@ -65,22 +64,23 @@ public class LogIn extends AppCompatActivity {
                                         // Get the user object
                                         User user = dataSnapshot.getValue(User.class);
                                         // Access the User fields
-                                        if(user.getFamily()!= null){
-                                            SharedPreferences temp = getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
-                                            SharedPreferences.Editor editor=temp.edit();
+                                        if (user.getFamily() != null) {
+                                            SharedPreferences temp = getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = temp.edit();
                                             editor.putString("fid", user.getFamily());
                                             editor.commit();
                                             DBref.fid = user.getFamily();
                                             Intent intent = new Intent(LogIn.this, MainActivity.class);
                                             startActivity(intent);
                                             finish();
-                                        }else {
+                                        } else {
                                             Intent intent = new Intent(LogIn.this, FamilySetUp.class);
                                             startActivity(intent);
                                             finish();
                                         }
                                     }
                                 }
+
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
                                     // Handle potential errors here

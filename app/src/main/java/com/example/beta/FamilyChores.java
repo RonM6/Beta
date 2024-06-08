@@ -1,7 +1,6 @@
 package com.example.beta;
 
 
-
 import static com.example.beta.DBref.refChores;
 
 import android.content.SharedPreferences;
@@ -35,8 +34,6 @@ public class FamilyChores extends Fragment {
     String fid;
 
 
-
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_family_chores, container, false);
@@ -67,7 +64,7 @@ public class FamilyChores extends Fragment {
                 chores.clear();
                 for (DataSnapshot choreSnapshot : snapshot.getChildren()) {
                     Chore chore = choreSnapshot.getValue(Chore.class);
-                    if (chore.getStatus().equals("a")){
+                    if (chore.getStatus().equals("a")) {
                         chores.add(chore);
                     }
                 }
@@ -80,7 +77,6 @@ public class FamilyChores extends Fragment {
 
             }
         });
-
 
 
         return view;

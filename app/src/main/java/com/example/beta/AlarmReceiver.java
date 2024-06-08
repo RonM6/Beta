@@ -14,6 +14,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     private static final String CHANNEL_ID = "Your_Channel_ID";
     private static final String CHANNEL_NAME = "Your_Channel_Name";
     private static final int NOTIFICATION_ID = 1;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         String choreTitle = intent.getStringExtra("title");
@@ -22,8 +23,9 @@ public class AlarmReceiver extends BroadcastReceiver {
         // Handle the alarm event here (e.g., show notification)
         String title = choreTitle + " is due in an hour!";
         String detail = choreDetails;
-        showNotification(context,title, detail);
+        showNotification(context, title, detail);
     }
+
     public static void showNotification(Context context, String title, String detail) {
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);

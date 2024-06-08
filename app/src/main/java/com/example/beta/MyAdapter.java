@@ -1,7 +1,6 @@
 package com.example.beta;
 
 import static com.example.beta.AlarmHelper.cancelAlarm;
-import static com.example.beta.DBref.fid;
 import static com.example.beta.DBref.mAuth;
 import static com.example.beta.DBref.refChores;
 import static com.example.beta.DBref.refUsers;
@@ -16,6 +15,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,10 +32,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
@@ -112,11 +111,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
                 reference.child(currentChore.getCid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DataSnapshot> task) {
-                        if (task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             DataSnapshot snapshot = task.getResult();
-                            if (snapshot.exists()){
+                            if (snapshot.exists()) {
                                 Chore chore = snapshot.getValue(Chore.class);
-                                if(chore != null){
+                                if (chore != null) {
                                     if (chore.getStatus().equals("d")) {
                                         FirebaseStorage storage = FirebaseStorage.getInstance("gs://beta-52e80.appspot.com");
 
@@ -142,7 +141,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
                                             }
                                         });
                                     }
-                                    if(chore.getStatus().equals("a")){
+                                    if (chore.getStatus().equals("a")) {
                                         cancelAlarm(context, chore.getCid());
                                         chore.setWhoEnded(mAuth.getUid());
                                         chore.setStatus("d");
@@ -154,7 +153,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
                                                     public void onSuccess(DataSnapshot dataSnapshot) {
                                                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                                             User user = snapshot.getValue(User.class);
-                                                            if (user.getChores().contains(chore.getCid())){
+                                                            if (user.getChores().contains(chore.getCid())) {
                                                                 user.getChores().remove(chore.getCid());
                                                                 refUsers.child(user.getUid()).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                     @Override

@@ -1,10 +1,8 @@
 package com.example.beta;
 
 
-
 import static com.example.beta.DBref.mAuth;
 import static com.example.beta.DBref.refChores;
-import static com.example.beta.DBref.refDChores;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,9 +13,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,8 +30,6 @@ public class DoneChores extends Fragment {
     RecyclerView recyclerView;
     MyAdapter adapter;
     String fid;
-
-
 
 
     @Override
@@ -69,7 +62,7 @@ public class DoneChores extends Fragment {
                 chores.clear();
                 for (DataSnapshot choreSnapshot : snapshot.getChildren()) {
                     Chore chore = choreSnapshot.getValue(Chore.class);
-                    if(chore.getStatus().equals("d") & chore.getCreator().equals(mAuth.getUid())){
+                    if (chore.getStatus().equals("d") & chore.getCreator().equals(mAuth.getUid())) {
                         chores.add(chore);
                     }
                 }
@@ -82,7 +75,6 @@ public class DoneChores extends Fragment {
 
             }
         });
-
 
 
         return view;
